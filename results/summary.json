@@ -1,0 +1,634 @@
+[
+ {
+  "run": "ministral-14b-latest/cascade_alg_aao_gt1_L0",
+  "n": 58,
+  "agent_s": 46.55,
+  "agent_l": 46.55,
+  "step_s": 6.9,
+  "step_l": 10.34,
+  "tol1": 31.03,
+  "tol2": 46.55,
+  "tol3": 70.69,
+  "top3": 6.9,
+  "rtr": 31.03,
+  "late": 68.97,
+  "distract": 13.79,
+  "reexec": 17.9,
+  "step_s_ci": [
+   1.7,
+   13.8
+  ],
+  "agent_s_ci": [
+   34.5,
+   60.3
+  ],
+  "calls": 1,
+  "in_tok": 3076.69,
+  "out_tok": 462.19,
+  "latency_s": 5.94
+ },
+ {
+  "run": "ministral-14b-latest/cascade_alg_dcs_top1_gt1_L0",
+  "n": 111,
+  "agent_s": 60.36,
+  "agent_l": 60.36,
+  "step_s": 45.95,
+  "step_l": 45.95,
+  "tol1": 60.36,
+  "tol2": 72.97,
+  "tol3": 79.28,
+  "top3": 73.87,
+  "rtr": 87.39,
+  "late": 12.61,
+  "distract": 5.41,
+  "reexec": 15.25,
+  "step_s_ci": [
+   36.9,
+   55.9
+  ],
+  "agent_s_ci": [
+   51.4,
+   69.4
+  ],
+  "calls": 1,
+  "in_tok": 3623.34,
+  "out_tok": 409.6,
+  "latency_s": 4.74
+ },
+ {
+  "run": "ministral-14b-latest/cascade_alg_dcs_earliest_gt1_L0",
+  "n": 111,
+  "agent_s": 60.36,
+  "agent_l": 60.36,
+  "step_s": 45.05,
+  "step_l": 45.05,
+  "tol1": 61.26,
+  "tol2": 72.97,
+  "tol3": 79.28,
+  "top3": 74.77,
+  "rtr": 93.69,
+  "late": 6.31,
+  "distract": 2.7,
+  "reexec": 16.66,
+  "step_s_ci": [
+   36.0,
+   54.1
+  ],
+  "agent_s_ci": [
+   51.4,
+   70.3
+  ],
+  "calls": 1,
+  "in_tok": 3623.34,
+  "out_tok": 409.6,
+  "latency_s": 4.74
+ },
+ {
+  "run": "ministral-14b-latest/cascade_alg_dcs_origin_gt1_L0",
+  "n": 111,
+  "agent_s": 59.46,
+  "agent_l": 59.46,
+  "step_s": 42.34,
+  "step_l": 42.34,
+  "tol1": 59.46,
+  "tol2": 72.07,
+  "tol3": 78.38,
+  "top3": 73.87,
+  "rtr": 90.99,
+  "late": 9.01,
+  "distract": 4.5,
+  "reexec": 17.16,
+  "step_s_ci": [
+   33.3,
+   51.4
+  ],
+  "agent_s_ci": [
+   50.5,
+   69.4
+  ],
+  "calls": 1,
+  "in_tok": 3623.34,
+  "out_tok": 409.6,
+  "latency_s": 4.74
+ },
+ {
+  "run": "ministral-14b-latest/cascade_alg_carr_temporal_gt1_L0",
+  "n": 111,
+  "agent_s": 60.36,
+  "agent_l": 60.36,
+  "step_s": 45.95,
+  "step_l": 45.95,
+  "tol1": 60.36,
+  "tol2": 72.97,
+  "tol3": 79.28,
+  "top3": 76.58,
+  "rtr": 87.39,
+  "late": 12.61,
+  "distract": 5.41,
+  "reexec": 15.25,
+  "step_s_ci": [
+   36.9,
+   55.9
+  ],
+  "agent_s_ci": [
+   51.4,
+   69.4
+  ],
+  "calls": 1,
+  "in_tok": 3623.34,
+  "out_tok": 409.6,
+  "latency_s": 4.74
+ },
+ {
+  "run": "ministral-14b-latest/cascade_alg_carr_gt1_L0",
+  "n": 111,
+  "agent_s": 60.36,
+  "agent_l": 60.36,
+  "step_s": 45.95,
+  "step_l": 45.95,
+  "tol1": 60.36,
+  "tol2": 72.97,
+  "tol3": 79.28,
+  "top3": 73.87,
+  "rtr": 87.39,
+  "late": 12.61,
+  "distract": 5.41,
+  "reexec": 15.25,
+  "step_s_ci": [
+   36.9,
+   55.9
+  ],
+  "agent_s_ci": [
+   51.4,
+   69.4
+  ],
+  "calls": 1,
+  "in_tok": 3623.34,
+  "out_tok": 409.6,
+  "latency_s": 4.74
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_aao_gt1_L0",
+  "n": 126,
+  "agent_s": 52.38,
+  "agent_l": 52.38,
+  "step_s": 14.29,
+  "step_l": 15.87,
+  "tol1": 38.89,
+  "tol2": 54.76,
+  "tol3": 68.25,
+  "top3": 14.29,
+  "rtr": 48.41,
+  "late": 51.59,
+  "reexec": 25.72,
+  "step_s_ci": [
+   7.9,
+   20.6
+  ],
+  "agent_s_ci": [
+   43.7,
+   61.1
+  ],
+  "calls": 1,
+  "in_tok": 3677.44,
+  "out_tok": 465.14,
+  "latency_s": 5.49
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_dcs_top1_gt1_L0",
+  "n": 126,
+  "agent_s": 57.14,
+  "agent_l": 57.14,
+  "step_s": 40.48,
+  "step_l": 40.48,
+  "tol1": 56.35,
+  "tol2": 64.29,
+  "tol3": 73.02,
+  "top3": 71.43,
+  "rtr": 90.48,
+  "late": 9.52,
+  "reexec": 21.66,
+  "step_s_ci": [
+   31.7,
+   49.2
+  ],
+  "agent_s_ci": [
+   48.4,
+   65.1
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 402.15,
+  "latency_s": 4.67
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_dcs_earliest_gt1_L0",
+  "n": 126,
+  "agent_s": 57.14,
+  "agent_l": 57.14,
+  "step_s": 38.89,
+  "step_l": 38.89,
+  "tol1": 55.56,
+  "tol2": 63.49,
+  "tol3": 69.05,
+  "top3": 67.46,
+  "rtr": 93.65,
+  "late": 6.35,
+  "reexec": 23.4,
+  "step_s_ci": [
+   31.0,
+   47.6
+  ],
+  "agent_s_ci": [
+   48.4,
+   65.1
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 402.15,
+  "latency_s": 4.67
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_dcs_origin_gt1_L0",
+  "n": 126,
+  "agent_s": 57.94,
+  "agent_l": 57.94,
+  "step_s": 38.89,
+  "step_l": 38.89,
+  "tol1": 56.35,
+  "tol2": 62.7,
+  "tol3": 69.05,
+  "top3": 71.43,
+  "rtr": 92.86,
+  "late": 7.14,
+  "reexec": 23.04,
+  "step_s_ci": [
+   30.2,
+   46.8
+  ],
+  "agent_s_ci": [
+   48.4,
+   65.9
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 402.15,
+  "latency_s": 4.67
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_carr_temporal_gt1_L0",
+  "n": 126,
+  "agent_s": 57.14,
+  "agent_l": 57.14,
+  "step_s": 40.48,
+  "step_l": 40.48,
+  "tol1": 56.35,
+  "tol2": 64.29,
+  "tol3": 73.02,
+  "top3": 71.43,
+  "rtr": 90.48,
+  "late": 9.52,
+  "reexec": 21.66,
+  "step_s_ci": [
+   31.7,
+   49.2
+  ],
+  "agent_s_ci": [
+   48.4,
+   65.1
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 402.15,
+  "latency_s": 4.67
+ },
+ {
+  "run": "ministral-14b-latest/orig_alg_carr_gt1_L0",
+  "n": 126,
+  "agent_s": 57.14,
+  "agent_l": 57.14,
+  "step_s": 40.48,
+  "step_l": 40.48,
+  "tol1": 56.35,
+  "tol2": 64.29,
+  "tol3": 73.02,
+  "top3": 70.63,
+  "rtr": 90.48,
+  "late": 9.52,
+  "reexec": 21.66,
+  "step_s_ci": [
+   31.7,
+   49.2
+  ],
+  "agent_s_ci": [
+   48.4,
+   65.1
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 402.15,
+  "latency_s": 4.67
+ },
+ {
+  "run": "open-mistral-nemo/cascade_alg_dcs_top1_gt1_L0",
+  "n": 48,
+  "agent_s": 62.5,
+  "agent_l": 62.5,
+  "step_s": 31.25,
+  "step_l": 31.25,
+  "tol1": 43.75,
+  "tol2": 64.58,
+  "tol3": 77.08,
+  "top3": 79.17,
+  "rtr": 66.67,
+  "late": 33.33,
+  "distract": 16.67,
+  "reexec": 14.86,
+  "step_s_ci": [
+   18.8,
+   43.8
+  ],
+  "agent_s_ci": [
+   47.9,
+   77.1
+  ],
+  "calls": 1,
+  "in_tok": 3122.67,
+  "out_tok": 444.94,
+  "latency_s": 7.33
+ },
+ {
+  "run": "open-mistral-nemo/cascade_alg_dcs_earliest_gt1_L0",
+  "n": 48,
+  "agent_s": 45.83,
+  "agent_l": 45.83,
+  "step_s": 27.08,
+  "step_l": 27.08,
+  "tol1": 50.0,
+  "tol2": 68.75,
+  "tol3": 77.08,
+  "top3": 77.08,
+  "rtr": 91.67,
+  "late": 8.33,
+  "distract": 4.17,
+  "reexec": 21.18,
+  "step_s_ci": [
+   14.6,
+   39.6
+  ],
+  "agent_s_ci": [
+   33.3,
+   60.4
+  ],
+  "calls": 1,
+  "in_tok": 3122.67,
+  "out_tok": 444.94,
+  "latency_s": 7.33
+ },
+ {
+  "run": "open-mistral-nemo/cascade_alg_dcs_origin_gt1_L0",
+  "n": 48,
+  "agent_s": 52.08,
+  "agent_l": 52.08,
+  "step_s": 29.17,
+  "step_l": 29.17,
+  "tol1": 50.0,
+  "tol2": 72.92,
+  "tol3": 81.25,
+  "top3": 79.17,
+  "rtr": 83.33,
+  "late": 16.67,
+  "distract": 8.33,
+  "reexec": 18.17,
+  "step_s_ci": [
+   16.7,
+   41.7
+  ],
+  "agent_s_ci": [
+   37.5,
+   66.7
+  ],
+  "calls": 1,
+  "in_tok": 3122.67,
+  "out_tok": 444.94,
+  "latency_s": 7.33
+ },
+ {
+  "run": "open-mistral-nemo/cascade_alg_carr_temporal_gt1_L0",
+  "n": 48,
+  "agent_s": 60.42,
+  "agent_l": 60.42,
+  "step_s": 29.17,
+  "step_l": 29.17,
+  "tol1": 41.67,
+  "tol2": 64.58,
+  "tol3": 77.08,
+  "top3": 75.0,
+  "rtr": 68.75,
+  "late": 31.25,
+  "distract": 16.67,
+  "reexec": 15.69,
+  "step_s_ci": [
+   16.7,
+   43.8
+  ],
+  "agent_s_ci": [
+   45.8,
+   75.0
+  ],
+  "calls": 1,
+  "in_tok": 3122.67,
+  "out_tok": 444.94,
+  "latency_s": 7.33
+ },
+ {
+  "run": "open-mistral-nemo/cascade_alg_carr_gt1_L0",
+  "n": 48,
+  "agent_s": 62.5,
+  "agent_l": 62.5,
+  "step_s": 31.25,
+  "step_l": 31.25,
+  "tol1": 43.75,
+  "tol2": 64.58,
+  "tol3": 77.08,
+  "top3": 72.92,
+  "rtr": 66.67,
+  "late": 33.33,
+  "distract": 16.67,
+  "reexec": 14.86,
+  "step_s_ci": [
+   18.8,
+   43.8
+  ],
+  "agent_s_ci": [
+   47.9,
+   77.1
+  ],
+  "calls": 1,
+  "in_tok": 3122.67,
+  "out_tok": 444.94,
+  "latency_s": 7.33
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_aao_gt1_L0",
+  "n": 126,
+  "agent_s": 49.21,
+  "agent_l": 49.21,
+  "step_s": 13.49,
+  "step_l": 14.29,
+  "tol1": 33.33,
+  "tol2": 55.56,
+  "tol3": 72.22,
+  "top3": 13.49,
+  "rtr": 50.79,
+  "late": 49.21,
+  "reexec": 23.34,
+  "step_s_ci": [
+   7.9,
+   19.0
+  ],
+  "agent_s_ci": [
+   40.5,
+   57.9
+  ],
+  "calls": 1,
+  "in_tok": 3677.44,
+  "out_tok": 641.58,
+  "latency_s": 10.23
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_dcs_top1_gt1_L0",
+  "n": 126,
+  "agent_s": 62.7,
+  "agent_l": 62.7,
+  "step_s": 41.27,
+  "step_l": 41.27,
+  "tol1": 53.17,
+  "tol2": 66.67,
+  "tol3": 77.78,
+  "top3": 68.25,
+  "rtr": 84.13,
+  "late": 15.87,
+  "reexec": 17.65,
+  "step_s_ci": [
+   32.5,
+   50.0
+  ],
+  "agent_s_ci": [
+   54.0,
+   70.6
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 440.73,
+  "latency_s": 5.7
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_dcs_earliest_gt1_L0",
+  "n": 126,
+  "agent_s": 50.0,
+  "agent_l": 50.0,
+  "step_s": 33.33,
+  "step_l": 33.33,
+  "tol1": 50.0,
+  "tol2": 59.52,
+  "tol3": 68.25,
+  "top3": 64.29,
+  "rtr": 95.24,
+  "late": 4.76,
+  "reexec": 25.92,
+  "step_s_ci": [
+   25.4,
+   41.3
+  ],
+  "agent_s_ci": [
+   41.3,
+   57.9
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 440.73,
+  "latency_s": 5.7
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_dcs_origin_gt1_L0",
+  "n": 126,
+  "agent_s": 51.59,
+  "agent_l": 51.59,
+  "step_s": 33.33,
+  "step_l": 33.33,
+  "tol1": 50.0,
+  "tol2": 59.52,
+  "tol3": 70.63,
+  "top3": 68.25,
+  "rtr": 92.06,
+  "late": 7.94,
+  "reexec": 24.47,
+  "step_s_ci": [
+   25.4,
+   41.3
+  ],
+  "agent_s_ci": [
+   42.9,
+   59.5
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 440.73,
+  "latency_s": 5.7
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_carr_temporal_gt1_L0",
+  "n": 126,
+  "agent_s": 62.7,
+  "agent_l": 62.7,
+  "step_s": 39.68,
+  "step_l": 39.68,
+  "tol1": 51.59,
+  "tol2": 64.29,
+  "tol3": 75.4,
+  "top3": 66.67,
+  "rtr": 84.92,
+  "late": 15.08,
+  "reexec": 19.17,
+  "step_s_ci": [
+   31.0,
+   48.4
+  ],
+  "agent_s_ci": [
+   54.0,
+   70.6
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 440.73,
+  "latency_s": 5.7
+ },
+ {
+  "run": "open-mistral-nemo/orig_alg_carr_gt1_L0",
+  "n": 126,
+  "agent_s": 62.7,
+  "agent_l": 62.7,
+  "step_s": 39.68,
+  "step_l": 39.68,
+  "tol1": 51.59,
+  "tol2": 65.08,
+  "tol3": 76.19,
+  "top3": 67.46,
+  "rtr": 84.13,
+  "late": 15.87,
+  "reexec": 18.69,
+  "step_s_ci": [
+   31.0,
+   48.4
+  ],
+  "agent_s_ci": [
+   54.0,
+   70.6
+  ],
+  "calls": 1,
+  "in_tok": 3643.97,
+  "out_tok": 440.73,
+  "latency_s": 5.7
+ }
+]

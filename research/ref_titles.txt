@@ -1,0 +1,27 @@
+Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems
+Why Do Multi-Agent LLM Systems Fail?
+AgenTracer: Who Is Inducing Failure in the LLM Agentic Systems?
+Abduct, Act, Predict: Scaffolding Causal Inference for Automated Failure Attribution in Multi-Agent Systems
+GraphTracer: Graph-Guided Failure Tracing in LLM Agents for Robust Multi-Turn Deep Search
+From Flat Logs to Causal Graphs: Hierarchical Failure Attribution for LLM-based Multi-Agent Systems
+Conformal Agent Error Attribution
+DoVer: Intervention-Driven Auto Debugging for LLM Multi-Agent Systems
+Seeing the Whole Elephant: A Benchmark for Failure Attribution in LLM-based Multi-Agent Systems
+Spectrum-Based Failure Attribution for Multi-Agent Systems
+RAFFLES: Reasoning-based Attribution of Faults for LLM Systems
+Metacognitive Self-Correction for Multi-Agent System via Prototype-Guided Next-Execution Reconstruction
+On the Resilience of LLM-Based Multi-Agent Collaboration with Faulty Agents
+AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation
+MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework
+GAIA: a benchmark for General AI Assistants
+AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks?
+Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks
+Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+A Survey on Software Fault Localization
+Lost in the Middle: How Language Models Use Long Contexts
+ReAct: Synergizing Reasoning and Acting in Language Models
+Interactive Debugging and Steering of Multi-Agent AI Systems
+Efficient Failure Management for Multi-Agent Systems with Reasoning Trace Representation
+LumiMAS: A Comprehensive Framework for Real-Time Monitoring and Enhanced Observability in Multi-Agent Systems
+FALAT: Tracing Failures in LLM Agent Trajectories via Dependency-Guided Search
+Automatic Failure Attribution and Critical Step Prediction Method for Multi-Agent Systems Based on Causal Inference

@@ -1,0 +1,63 @@
+===  Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems
+  AX 2025-04-30 | http://arxiv.org/abs/2505.00212v3 | Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems | Shaokun Zhang; Ming Yin; Jieyu Zhang; Jiale Liu; Zhiguang Han; Jingyang Zhang; Beibin Li; Chi Wang; Huazheng Wang; Yiran Chen; Qingyun Wu
+===  Why Do Multi-Agent LLM Systems Fail?
+  CR 2025 | Advances in Neural Information Processing Systems 38 | Why Do Multi-Agent LLM Systems Fail? | doi: 10.52202/085713-4082 | pp 135676-135729 | vol  | no  | Mert Cemri; Melissa Z Pan; Shuyi Yang; Lakshya A Agrawal; Bhavya Chopra; Rishabh Tiwari; Kurt Keutzer; Aditya Parameswaran; Dan Klein; Kannan Ramchandran; Matei A Zaharia; Joseph Gonzalez; Ion Stoica
+  AX 2025-03-17 | http://arxiv.org/abs/2503.13657v3 | Why Do Multi-Agent LLM Systems Fail? | Mert Cemri; Melissa Z. Pan; Shuyi Yang; Lakshya A. Agrawal; Bhavya Chopra; Rishabh Tiwari; Kurt Keutzer; Aditya Parameswaran; Dan Klein; Kannan Ramchandran; Matei Zaharia; Joseph E. Gonzalez; Ion Stoica
+===  AgenTracer: Who Is Inducing Failure in the LLM Agentic Systems?
+  AX 2025-09-03 | http://arxiv.org/abs/2509.03312v2 | AgenTracer: Who Is Inducing Failure in the LLM Agentic Systems? | Guibin Zhang; Junhao Wang; Junjie Chen; Wangchunshu Zhou; Kun Wang; Shuicheng Yan
+===  Abduct, Act, Predict: Scaffolding Causal Inference for Automated Failure Attribution in Multi-Agent Systems
+  AX 2025-09-12 | http://arxiv.org/abs/2509.10401v2 | Abduct, Act, Predict: Scaffolding Causal Inference for Automated Failure Attribution in Multi-Agent Systems | Alva West; Yixuan Weng; Minjun Zhu; Zhen Lin; Zhiyuan Ning; Yue Zhang
+===  GraphTracer: Graph-Guided Failure Tracing in LLM Agents for Robust Multi-Turn Deep Search
+  AX 2025-10-12 | http://arxiv.org/abs/2510.10581v2 | GraphTracer: Graph-Guided Failure Tracing in LLM Agents for Robust Multi-Turn Deep Search | Heng Zhang; Yuling Shi; Xiaodong Gu; Haochen You; Zijian Zhang; Lubin Gan; Yilei Yuan; Jin Huang
+===  From Flat Logs to Causal Graphs: Hierarchical Failure Attribution for LLM-based Multi-Agent Systems
+  AX 2026-02-27 | http://arxiv.org/abs/2602.23701v1 | From Flat Logs to Causal Graphs: Hierarchical Failure Attribution for LLM-based Multi-Agent Systems | Yawen Wang; Wenjie Wu; Junjie Wang; Qing Wang
+===  Conformal Agent Error Attribution
+  AX 2026-05-07 | http://arxiv.org/abs/2605.06788v1 | Conformal Agent Error Attribution | Naihe Feng; Yi Sui; Shiyi Hou; Ga Wu; Jesse C. Cresswell
+===  DoVer: Intervention-Driven Auto Debugging for LLM Multi-Agent Systems
+  AX 2025-12-07 | http://arxiv.org/abs/2512.06749v3 | DoVer: Intervention-Driven Auto Debugging for LLM Multi-Agent Systems | Ming Ma; Jue Zhang; Fangkai Yang; Yu Kang; Qingwei Lin; Saravan Rajmohan; Dongmei Zhang
+===  Seeing the Whole Elephant: A Benchmark for Failure Attribution in LLM-based Multi-Agent Systems
+  CR 2026 | Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) | Seeing the Whole Elephant: A Benchmark for Failure Attribution in LLM-based Multi-Agent Systems | doi: 10.18653/v1/2026.acl-long.912 | pp 19888-19905 | vol  | no  | Mengzhuo Chen; Junjie Wang; Fangwen Mu; Yawen Wang; Zhe Liu; Huanxiang Feng; Qing Wang
+  AX 2026-04-24 | http://arxiv.org/abs/2604.22708v1 | Seeing the Whole Elephant: A Benchmark for Failure Attribution in LLM-based Multi-Agent Systems | Mengzhuo Chen; Junjie Wang; Fangwen Mu; Yawen Wang; Zhe Liu; Huanxiang Feng; Qing Wang
+===  Spectrum-Based Failure Attribution for Multi-Agent Systems
+  CR 2026 | Proceedings of the ACM on Software Engineering | Spectrum-Based Failure Attribution for Multi-agent Systems | doi: 10.1145/3797113 | pp 1888-1909 | vol 3 | no FSE | Yu Ge; Linna Xie; Zhong Li; Yu Pei; Tian Zhang
+===  RAFFLES: Reasoning-based Attribution of Faults for LLM Systems
+  CR 2026 | Proceedings of the 19th Conference of the European Chapter of the Association for Computational Linguistics (Volume 1: Long Papers) | RAFFLES: Reasoning-based Attribution of Faults for LLM Systems | doi: 10.18653/v1/2026.eacl-long.359 | pp 7659-7688 | vol  | no  | Chenyang Zhu; Spencer Hong; Jingyu Wu; Kushal Chawla; Yuhui Tang; Youbing Yin; Nathan Wolfe; Erin Babinsky; Daben Liu
+  AX 2025-09-08 | http://arxiv.org/abs/2509.06822v3 | RAFFLES: Reasoning-based Attribution of Faults for LLM Systems | Chenyang Zhu; Spencer Hong; Jingyu Wu; Kushal Chawla; Charlotte Tang; Youbing Yin; Nathan Wolfe; Erin Babinsky; Daben Liu
+===  Metacognitive Self-Correction for Multi-Agent System via Prototype-Guided Next-Execution Reconstruction
+  CR 2026 | Findings of the Association for Computational Linguistics: ACL 2026 | Metacognitive Self-Correction for Multi-Agent System via Prototype-Guided Next-Execution Reconstruction | doi: 10.18653/v1/2026.findings-acl.1168 | pp 23320-23337 | vol  | no  | Xu Shen; Qi Zhang; Song Wang; Zhen Tan; Xinyu Zhao; Laura Yao; Vaishnav Tadiparthi; Hossein Nourkhiz Mahjoub; Ehsan Moradi Pari; Kwonjoon Lee; Tianlong Chen
+  AX 2025-10-16 | http://arxiv.org/abs/2510.14319v2 | Metacognitive Self-Correction for Multi-Agent System via Prototype-Guided Next-Execution Reconstruction | Xu Shen; Qi Zhang; Song Wang; Zhen Tan; Xinyu Zhao; Laura Yao; Vaishnav Tadiparthi; Hossein Nourkhiz Mahjoub; Ehsan Moradi Pari; Kwonjoon Lee; Tianlong Chen
+===  On the Resilience of LLM-Based Multi-Agent Collaboration with Faulty Agents
+  AX 2024-08-02 | http://arxiv.org/abs/2408.00989v4 | On the Resilience of LLM-Based Multi-Agent Collaboration with Faulty Agents | Jen-tse Huang; Jiaxu Zhou; Tailin Jin; Xuhui Zhou; Zixi Chen; Wenxuan Wang; Youliang Yuan; Michael R. Lyu; Maarten Sap
+===  AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation
+  AX 2023-08-16 | http://arxiv.org/abs/2308.08155v2 | AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation | Qingyun Wu; Gagan Bansal; Jieyu Zhang; Yiran Wu; Beibin Li; Erkang Zhu; Li Jiang; Xiaoyun Zhang; Shaokun Zhang; Jiale Liu; Ahmed Hassan Awadallah; Ryen W White; Doug Burger; Chi Wang
+===  MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework
+  AX 2023-08-01 | http://arxiv.org/abs/2308.00352v7 | MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework | Sirui Hong; Mingchen Zhuge; Jiaqi Chen; Xiawu Zheng; Yuheng Cheng; Ceyao Zhang; Jinlin Wang; Zili Wang; Steven Ka Shing Yau; Zijuan Lin; Liyang Zhou; Chenyu Ran; Lingfeng Xiao; Chenglin Wu; Jürgen Schmidhuber
+===  GAIA: a benchmark for General AI Assistants
+  AX 2023-11-21 | http://arxiv.org/abs/2311.12983v1 | GAIA: a benchmark for General AI Assistants | Grégoire Mialon; Clémentine Fourrier; Craig Swift; Thomas Wolf; Yann LeCun; Thomas Scialom
+===  AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks?
+  CR 2024 | Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing | AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks? | doi: 10.18653/v1/2024.emnlp-main.505 | pp 8938-8968 | vol  | no  | Ori Yoran; Samuel Joseph Amouyal; Chaitanya Malaviya; Ben Bogin; Ofir Press; Jonathan Berant
+  AX 2024-07-22 | http://arxiv.org/abs/2407.15711v2 | AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks? | Ori Yoran; Samuel Joseph Amouyal; Chaitanya Malaviya; Ben Bogin; Ofir Press; Jonathan Berant
+===  Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks
+  AX 2024-11-07 | http://arxiv.org/abs/2411.04468v1 | Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks | Adam Fourney; Gagan Bansal; Hussein Mozannar; Cheng Tan; Eduardo Salinas;  Erkang;  Zhu; Friederike Niedtner; Grace Proebsting; Griffin Bassman; Jack Gerrits; Jacob Alber; Peter Chang; Ricky Loynd; Robert West
+===  Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+  CR 2023 | Advances in Neural Information Processing Systems 36 | Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena | doi: 10.52202/075280-2020 | pp 46595-46623 | vol  | no  | Lianmin Zheng; Wei-Lin Chiang; Ying Sheng; Siyuan Zhuang; Zhanghao Wu; Yonghao Zhuang; Zi Lin; Zhuohan Li; Dacheng Li; Eric Xing; Hao Zhang; Joseph Gonzalez; Ion Stoica
+  AX 2023-06-09 | http://arxiv.org/abs/2306.05685v4 | Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena | Lianmin Zheng; Wei-Lin Chiang; Ying Sheng; Siyuan Zhuang; Zhanghao Wu; Yonghao Zhuang; Zi Lin; Zhuohan Li; Dacheng Li; Eric P. Xing; Hao Zhang; Joseph E. Gonzalez; Ion Stoica
+===  A Survey on Software Fault Localization
+===  Lost in the Middle: How Language Models Use Long Contexts
+  CR 2024 | Transactions of the Association for Computational Linguistics | Lost in the Middle: How Language Models Use Long Contexts | doi: 10.1162/tacl_a_00638 | pp 157-173 | vol 12 | no  | Nelson F. Liu; Kevin Lin; John Hewitt; Ashwin Paranjape; Michele Bevilacqua; Fabio Petroni; Percy Liang
+  AX 2023-07-06 | http://arxiv.org/abs/2307.03172v3 | Lost in the Middle: How Language Models Use Long Contexts | Nelson F. Liu; Kevin Lin; John Hewitt; Ashwin Paranjape; Michele Bevilacqua; Fabio Petroni; Percy Liang
+===  ReAct: Synergizing Reasoning and Acting in Language Models
+  AX 2022-10-06 | http://arxiv.org/abs/2210.03629v3 | ReAct: Synergizing Reasoning and Acting in Language Models | Shunyu Yao; Jeffrey Zhao; Dian Yu; Nan Du; Izhak Shafran; Karthik Narasimhan; Yuan Cao
+===  Interactive Debugging and Steering of Multi-Agent AI Systems
+  CR 2025 | Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems | Interactive Debugging and Steering of Multi-Agent AI Systems | doi: 10.1145/3706598.3713581 | pp 1-15 | vol  | no  | Will Epperson; Gagan Bansal; Victor C Dibia; Adam Fourney; Jack Gerrits; Erkang (Eric) Zhu; Saleema Amershi
+  AX 2025-03-03 | http://arxiv.org/abs/2503.02068v1 | Interactive Debugging and Steering of Multi-Agent AI Systems | Will Epperson; Gagan Bansal; Victor Dibia; Adam Fourney; Jack Gerrits; Erkang Zhu; Saleema Amershi
+===  Efficient Failure Management for Multi-Agent Systems with Reasoning Trace Representation
+  CR 2026 | Proceedings of the 34th ACM International Conference on the Foundations of Software Engineering | Efficient Failure Management for Multi-Agent Systems with Reasoning Trace Representation | doi: 10.1145/3803437.3805560 | pp 1222-1226 | vol  | no  | Lingzhe Zhang; Tong Jia; Mingyu Wang; Weijie Hong; Chiming Duan; Minghua He; Rongqian Wang; Xi Peng; Meiling Wang; Nicholas Zhang; Renhai Chen; Ying Li
+  AX 2026-03-23 | http://arxiv.org/abs/2603.21522v1 | Efficient Failure Management for Multi-Agent Systems with Reasoning Trace Representation | Lingzhe Zhang; Tong Jia; Mingyu Wang; Weijie Hong; Chiming Duan; Minghua He; Rongqian Wang; Xi Peng; Meiling Wang; Gong Zhang; Renhai Chen; Ying Li
+===  LumiMAS: A Comprehensive Framework for Real-Time Monitoring and Enhanced Observability in Multi-Agent Systems
+  CR None | Proceedings of the 25th International Conference on Autonomous Agents and Multiagent Systems | LumiMAS: A Comprehensive Framework for Real-Time Monitoring and Enhanced Observability in Multi-Agent Systems | doi: 10.65109/pnwl9707 | pp  | vol  | no  | Ron Solomon; Yarin Yerushalmi Levi; Lior Waknin; Eran Aizikovich; Amit Baras; Etai Ohana; Amit Giloni; Shamik Bose; Chiara Picardi; Yuval Elovici; Asaf Shabtai
+  AX 2025-08-17 | http://arxiv.org/abs/2508.12412v2 | LumiMAS: A Comprehensive Framework for Real-Time Monitoring and Enhanced Observability in Multi-Agent Systems | Ron Solomon; Yarin Yerushalmi Levi; Lior Vaknin; Eran Aizikovich; Amit Baras; Etai Ohana; Amit Giloni; Shamik Bose; Chiara Picardi; Yuval Elovici; Asaf Shabtai
+===  FALAT: Tracing Failures in LLM Agent Trajectories via Dependency-Guided Search
+  AX 2026-05-30 | http://arxiv.org/abs/2606.00765v1 | FALAT: Tracing Failures in LLM Agent Trajectories via Dependency-Guided Search | Md Nakhla Rafi; Md Ahasanuzzaman; Dong Jae Kim; Zhijie Wang; Tse-Hsun Chen
+===  Automatic Failure Attribution and Critical Step Prediction Method for Multi-Agent Systems Based on Causal Inference
+  AX 2025-09-10 | http://arxiv.org/abs/2509.08682v1 | Automatic Failure Attribution and Critical Step Prediction Method for Multi-Agent Systems Based on Causal Inference | Guoqing Ma; Jia Zhu; Hanghui Guo; Weijie Shi; Jiawei Shen; Jingjiang Liu; Yidan Liang

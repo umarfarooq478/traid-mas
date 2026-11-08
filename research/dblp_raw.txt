@@ -1,0 +1,54 @@
+DBLP ERR Expecting value: line 1 column 1 (char 0)
+===  Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems
+DBLP ERR Expecting value: line 1 column 1 (char 0)
+===  Why Do Multi-Agent LLM Systems Fail?
+DBLP ERR Expecting value: line 1 column 1 (char 0)
+===  AgenTracer: Who Is Inducing Failure in the LLM Agentic Systems?
+DBLP ERR Expecting value: line 1 column 1 (char 0)
+===  Abduct, Act, Predict: Scaffolding Causal Inference for Automated Failure Attribution in Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  GraphTracer: Graph-Guided Failure Tracing in LLM Agents for Robust Multi-Turn Deep Search
+DBLP ERR HTTP Error 429: Too Many Requests
+===  From Flat Logs to Causal Graphs: Hierarchical Failure Attribution for LLM-based Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Conformal Agent Error Attribution
+DBLP ERR HTTP Error 429: Too Many Requests
+===  DoVer: Intervention-Driven Auto Debugging for LLM Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Seeing the Whole Elephant: A Benchmark for Failure Attribution in LLM-based Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Spectrum-Based Failure Attribution for Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  RAFFLES: Reasoning-based Attribution of Faults for LLM Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Metacognitive Self-Correction for Multi-Agent System via Prototype-Guided Next-Execution Reconstruction
+DBLP ERR HTTP Error 429: Too Many Requests
+===  On the Resilience of LLM-Based Multi-Agent Collaboration with Faulty Agents
+DBLP ERR HTTP Error 429: Too Many Requests
+===  AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation
+DBLP ERR HTTP Error 429: Too Many Requests
+===  MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework
+DBLP ERR HTTP Error 429: Too Many Requests
+===  GAIA: a benchmark for General AI Assistants
+DBLP ERR HTTP Error 429: Too Many Requests
+===  AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks?
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+DBLP ERR HTTP Error 429: Too Many Requests
+===  A Survey on Software Fault Localization
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Lost in the Middle: How Language Models Use Long Contexts
+DBLP ERR HTTP Error 429: Too Many Requests
+===  ReAct: Synergizing Reasoning and Acting in Language Models
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Interactive Debugging and Steering of Multi-Agent AI Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Efficient Failure Management for Multi-Agent Systems with Reasoning Trace Representation
+DBLP ERR HTTP Error 429: Too Many Requests
+===  LumiMAS: A Comprehensive Framework for Real-Time Monitoring and Enhanced Observability in Multi-Agent Systems
+DBLP ERR HTTP Error 429: Too Many Requests
+===  FALAT: Tracing Failures in LLM Agent Trajectories via Dependency-Guided Search
+DBLP ERR HTTP Error 429: Too Many Requests
+===  Automatic Failure Attribution and Critical Step Prediction Method for Multi-Agent Systems Based on Causal Inference
