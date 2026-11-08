@@ -1,0 +1,13 @@
+.env
+cache/
+__pycache__/
+logs/
+*.aux
+*.log
+*.out
+*.pdf
+*.tex
+*.blg
+*.bbl
+/sections
+/tables
