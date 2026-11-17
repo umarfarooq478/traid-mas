@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{CARMA-Cascade: step accuracy on the original logs vs.\ the same logs with one injected downstream error, and distraction rate (DR, share of predictions blaming the injected step).}
+\label{tab:cascade}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+Judge & Method & $n$ & Orig. & Cascade & $\Delta$ ($p$) & DR pre & DR$\downarrow$ \\
+\midrule
+14B & All-at-Once & 58 & 12.1 & 6.9 & -5.2 (0.45) & 8.6 & 13.8 \\
+14B & DCS top-1 (ours) & 111 & 45.0 & 45.9 & +0.9 (1.00) & 1.8 & 5.4 \\
+14B & DCS + CARR, temporal graph & 111 & 45.0 & 45.9 & +0.9 (1.00) & 1.8 & 5.4 \\
+14B & \textbf{DCS + CARR (ours)} & 111 & 45.0 & 45.9 & +0.9 (1.00) & 1.8 & 5.4 \\
+Nemo & DCS top-1 (ours) & 85 & 48.2 & 37.6 & -10.6 (0.04) & 2.4 & 15.3 \\
+Nemo & DCS + CARR, temporal graph & 85 & 47.1 & 36.5 & -10.6 (0.04) & 2.4 & 15.3 \\
+Nemo & \textbf{DCS + CARR (ours)} & 85 & 47.1 & 37.6 & -9.4 (0.06) & 2.4 & 15.3 \\
+\bottomrule
+\end{tabular}
+\end{table}

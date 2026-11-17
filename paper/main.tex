@@ -1,0 +1,338 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+% Visible placeholder for any number that is not yet backed by a completed run.
+\newcommand{\TBD}[1]{\textcolor{red}{\textbf{[TBD: #1]}}}
+
+\begin{document}
+
+\title{CARMA: Candidate-based Attribution of Root\\ Failures in LLM Multi-Agent Systems}
+
+\author{\IEEEauthorblockN{Muhammad Umar Farooq}
+\IEEEauthorblockA{\textit{Department of Computer Science}\\
+\textit{National University of Computer and Emerging Sciences (FAST-NUCES)}\\
+Islamabad, Pakistan\\
+i267832@isb.nu.edu.pk (corresponding author)}}
+
+\maketitle
+
+\begin{abstract}
+When a multi-agent system built on large language models fails, the step that exposes the failure is often not the step that caused it, and published attribution results are hard to compare because evaluation conditions differ between papers. We reproduce the All-at-Once judge of the Who\&When benchmark under a fixed protocol with strict step scoring and obtain 52.4\% agent-level and 14.3\% step-level accuracy on the algorithm-generated subset, within two points of the published values. The reproduction exposes an indexing artefact: on unnumbered logs the judge never predicts step~0, although 20 of 126 decisive errors are there. We then propose CARMA, a training-free, single-call method. Dense Candidate Scoring (DCS) asks the judge for a scored list of candidate error steps over an explicitly numbered log, and Cascade-Aware Root Resolution (CARR) re-ranks the list with a deterministic graph of the artifacts each step reuses from earlier steps. We also build CARMA-Cascade, a multi-error variant of the benchmark with one injected downstream error per log. With two open-weight judges, DCS raises strict step accuracy from 14.3\% to 40.5\% and from 13.5\% to 41.3\% (paired gains of 26--28 points, McNemar $p<0.001$) at one call per log. Controls show that \TBD{share} of this gain comes from numbering the steps alone and \TBD{share} from the DCS prompt and candidate list. With the stronger judge DCS is unaffected by the injected error, while the weaker judge loses 13 points. CARR never changes the stronger judge's prediction, because the judge's probabilities are sharply over-confident (expected calibration error 0.38). Code, data and results: \url{https://github.com/umarfarooq478/traid-mas}
+\end{abstract}
+
+\begin{IEEEkeywords}
+failure attribution, multi-agent systems, large language models, LLM-as-a-judge, error propagation
+\end{IEEEkeywords}
+
+\section{Introduction}
+Large language models (LLMs) now run as agents that plan, call tools and keep working over many turns~\cite{yao2023react}. A common way to scale them is to split a task across several specialised agents~\cite{wu2024autogen,hong2024metagpt}. These systems fail often, and for many different reasons~\cite{cemri2025why}.
+
+When a multi-agent run fails, the step that exposes the failure is rarely the step that caused it. Agents build on each other's output, so a misread instruction or a wrong intermediate value can pass through many later messages before the final answer comes out wrong. \emph{Failure attribution} asks which agent, and which step, was decisively responsible~\cite{zhang2025whowhen}. Targeted debugging needs this answer, and so does any mechanism that rolls a run back to fix it~\cite{ma2025dover,feng2026conformal}. Doing it by hand means reading whole traces; annotating the first benchmark, Who\&When, took each annotator tens of hours~\cite{zhang2025whowhen}.
+
+The founding work posed attribution as recovering one decisive (agent, step) pair and tested three LLM-as-judge strategies: All-at-Once, Step-by-Step and Binary Search. Its best methods reach 53.5\% agent-level accuracy but only 14.2\% step-level accuracy over the whole benchmark; on the algorithm-generated subset with GPT-4o, Step-by-Step is the strongest step-level method at 25.5\%, while All-at-Once (12.5\%) falls below a random baseline (19.1\%)~\cite{zhang2025whowhen}. Since then, researchers have restructured the judge's reasoning~\cite{zhu2026raffles}, trained dedicated tracers on synthetic faults~\cite{zhang2026agentracer}, adapted spectrum-based fault localisation~\cite{ge2026spectrum,wong2016survey}, treated attribution as counterfactual causal inference~\cite{west2025a2p,ma2025causal}, and built dependency or causal graphs over the trace using extra LLM calls or reinforcement learning~\cite{zhang2025graphtracer,wang2026chief,rafi2026falat}. Runtime systems go further and try to catch and correct bad steps while the run is still going~\cite{shen2026masc,zhang2026eager,solomon2026lumimas}.
+
+Three gaps remain. \textbf{(G1) Reported numbers are hard to compare.} Showing the judge full execution traces instead of agent outputs alone raises accuracy by up to 76\%~\cite{chen2026elephant}, and prefixing every message with its step index alone raises the step accuracy of a causal-reasoning judge from 17.8\% to 47.5\%~\cite{west2025a2p}. We also found that the official scoring script of~\cite{zhang2025whowhen} accepts a predicted step whenever the gold index is a \emph{substring} of it, so gold ``1'' matches a prediction of ``12''. Rankings may therefore reflect evaluation conditions as much as method quality. \textbf{(G2) Nobody has tested the single-step formulation on cascading errors.} Every method above returns one step, yet real traces often contain several faulty messages, and a point predictor can be drawn to a later, louder symptom instead of the root. No study we reviewed measures this \emph{distraction} directly. \textbf{(G3) Attribution is not connected to recovery.} Runtime frameworks report detection AUC and task gains; attribution methods report localisation accuracy. Whether a predicted step would make a good rollback point, and at what cost, is rarely measured~\cite{feng2026conformal,shen2026masc,zhang2026eager}.
+
+We set three objectives against these gaps. \textbf{O1}: re-implement the base paper's judges~\cite{zhang2025whowhen} and evaluate every method under one fixed protocol (fixed observability, fixed ground-truth access, strict scoring), with controls that separate formatting from method. \textbf{O2}: build multi-error trajectories and test whether an attribution method can separate root causes from propagated symptoms without training or extra LLM calls. \textbf{O3}: score each predicted step, and each ranked list, as a rollback trigger, including how much correct work it would throw away and what it costs.
+
+We call the resulting framework CARMA (Candidate-based Attribution of Root failures in Multi-Agent systems). Its contributions are:
+\begin{enumerate}
+\item \textbf{A controlled evaluation protocol and reproduction.} Strict scoring, fixed observability and ground-truth settings, tolerance and top-$k$ accuracy, trivial reference baselines, rollback-trigger metrics, cost accounting, paired bootstrap intervals and exact McNemar tests, and a run-to-run drift check. Applied to the base paper, it reproduces All-at-Once within two points and shows that, on unnumbered logs, the judge never predicts step~0 and names an agent who did not speak at its predicted step in about three quarters of the logs.
+\item \textbf{Dense Candidate Scoring (DCS)}, a one-call attribution method that returns a scored list of candidate steps over a numbered log. It raises strict step accuracy by 26--28 points over the reproduced baseline with two judges. Controls that add step numbers to All-at-Once and restrict DCS to one candidate attribute this gain to numbering, prompt and list (Section~\ref{sec:decomp}).
+\item \textbf{CARMA-Cascade}, a multi-error version of Who\&When made by injecting one extra, independent error after the annotated decisive step (written by a different LLM than the judge), with a distraction rate, its pre-injection and chance levels, and a manipulation check.
+\item \textbf{An analysed negative result.} Cascade-Aware Root Resolution (CARR) re-ranks DCS candidates with a deterministic Artifact Provenance Graph (APG). It never changes the main judge's prediction. We show why: DCS probabilities are discriminative but strongly over-confident, so a bounded multiplicative correction cannot overturn them, although a perfect re-ranker of the same lists could reach \TBD{84.9}\% top-5 coverage.
+\end{enumerate}
+
+The rest of the paper is organised as follows. Section~\ref{sec:related} reviews related work. Section~\ref{sec:method} describes the data, the problem formulation and the method. Section~\ref{sec:exp} reports the setup, the reproduction, the results and the ablations, and Section~\ref{sec:concl} concludes.\footnote{This work extends an earlier, purely evaluative course proposal by adding DCS and CARR as concrete mechanisms, turning its research questions into measurable experiments, and limiting the intervention objective to an offline rollback analysis that can be computed on the public benchmark.}
+
+\section{Related Work}\label{sec:related}
+We organise prior work by how attribution evidence is obtained and when it is used.
+
+\textbf{Prompted LLM judges.} Zhang et al.~\cite{zhang2025whowhen} defined automated failure attribution and released Who\&When, 184 failed trajectories from 127 multi-agent systems built on GAIA~\cite{mialon2024gaia} and AssistantBench~\cite{yoran2024assistantbench}, each annotated with a responsible agent, a decisive step and a rationale. Their three judges trade context for focus: All-at-Once (AAO) reads the whole log and is best at naming the agent; Step-by-Step (SBS) asks after every step whether it is erroneous and is best at the step; Binary Search (BS) halves the log recursively. All three inherit LLM-as-judge biases~\cite{zheng2023judging} and degrade on long contexts~\cite{liu2024lost}. RAFFLES~\cite{zhu2026raffles} keeps the judge but iterates between a reasoner and specialised evaluators that test candidate faults against decisiveness criteria, which improves long-horizon localisation at the price of repeated full-context reasoning.
+
+\textbf{Learned and statistical attribution.} AgenTracer~\cite{zhang2026agentracer} generates labelled failures by counterfactual replay and programmed fault injection and trains a compact tracer with reinforcement learning; its synthetic faults are single and independent by construction. FAMAS~\cite{ge2026spectrum} adapts spectrum-based fault localisation~\cite{wong2016survey} by replaying a failing task and scoring actions that occur disproportionately in failing runs; it needs neither labels nor training but requires side-effect-free, repeatable execution.
+
+\textbf{Causal and dependency-aware attribution.} A closely related line separates root causes from propagated symptoms. A2P~\cite{west2025a2p} scaffolds abduction, intervention and outcome prediction in the judge's reasoning and reports step-level accuracy of 47.46\% on the algorithm-generated and 29.31\% on the hand-crafted subset of Who\&When. Its ablation is directly relevant here: removing the ``Step $t$ -'' prefixes from the log lowers its algorithm-generated step accuracy to 17.78\%, so most of the gain over its 16.67\% All-at-Once baseline is attributable to numbering. Ma et al.~\cite{ma2025causal} apply multi-granularity causal inference. GraphTracer~\cite{zhang2025graphtracer} builds information dependency graphs and trains a tracer with graph-structural rewards; CHIEF~\cite{wang2026chief} converts logs into a hierarchical causal graph and applies counterfactual screening; FALAT~\cite{rafi2026falat} searches over typed dependencies and verifies whether correcting a candidate would recover the outcome. These methods show that dependency structure matters, but they obtain it through additional LLM calls, training or replay, and they are evaluated on single-decisive-step labels.
+
+\textbf{Uncertainty, observability and evaluation.} Seeing the Whole Elephant~\cite{chen2026elephant} supplies full execution traces with reproducible environments and shows that observability alone changes accuracy by up to 76\%. Conformal Agent Error Attribution~\cite{feng2026conformal} replaces point predictions with contiguous step sets that carry coverage guarantees and uses them for rollback. DoVer~\cite{ma2025dover} treats attributions as hypotheses to be validated by intervention, notes that Who\&When labels are themselves uncertain, and reports that judges hallucinate step indices unless the log is explicitly numbered.
+
+\textbf{Runtime intervention, fault injection and robustness.} AGDebugger~\cite{epperson2025interactive} lets a developer inspect, edit and reset messages in a running system. MASC~\cite{shen2026masc} flags anomalous steps by history-conditioned next-execution reconstruction and triggers a correction agent; EAGER~\cite{zhang2026eager} uses contrastive reasoning-trace representations for real-time detection and mitigation; LumiMAS~\cite{solomon2026lumimas} layers lightweight anomaly detectors beneath an explanation stage. These systems report detection or task metrics, not localisation accuracy. Huang et al.~\cite{huang2025resilience} inject errors into agents' messages or profiles (AutoInject, AutoTransform) to measure resilience, and show that hierarchical topologies and challenger or inspector roles recover most of the lost performance; CARMA-Cascade uses the same message-level injection idea, but to test attribution rather than task success.
+
+\textbf{Synthesis.} Table~\ref{tab:related} summarises the comparison. Papers report accuracy under different observability, formatting, ground-truth and scoring conventions, so their rankings cannot be compared directly (G1). Every method is trained or evaluated against one decisive step, and none measures how often a later error pulls it away from the root (G2). The dependency-aware methods that could tell roots from symptoms pay for their graphs with extra LLM calls, replay or training, which is exactly the cost runtime systems avoid, and few studies score an attribution as a rollback trigger (G3).
+
+\begin{table*}[t]
+\centering
+\caption{Comparison of the most relevant attribution approaches. ``Calls'' is the number of LLM calls per trajectory at inference ($T$ = number of steps). Step accuracies are on the algorithm-generated Who\&When subset with ground truth, as reported by each paper (different backbones; not directly comparable).}
+\label{tab:related}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{2.2cm}p{3.6cm}p{2.3cm}p{1.6cm}p{3.3cm}p{3.6cm}@{}}
+\toprule
+Method & Mechanism & Data & Calls & Reported result & Limitation for G1--G3 \\
+\midrule
+Who\&When~\cite{zhang2025whowhen} & AAO / SBS / BS LLM judges & Who\&When (184) & $1$ / $\le T$ / $\approx\log_2 T$ & 12.5 / 25.5 / 24.0\% step (GPT-4o) & Single pair; substring scoring; unnumbered log \\
+RAFFLES~\cite{zhu2026raffles} & Iterative reasoner + evaluators & Who\&When & many & not comparable (other setting) & Offline, costly; single pair \\
+AgenTracer~\cite{zhang2026agentracer} & RL-trained tracer on injected faults & Synthetic + Who\&When & 1 (trained 8B) & not comparable & Needs training; single, independent faults \\
+FAMAS~\cite{ge2026spectrum} & Spectrum-based fault localisation & MAS failure logs & replays & not comparable & Needs repeatable, side-effect-free runs \\
+A2P~\cite{west2025a2p} & Abduct--act--predict scaffold, numbered log & Who\&When & 1+ & 47.46\% (17.78\% without numbering) & Single pair; no multi-error test \\
+GraphTracer / CHIEF / FALAT~\cite{zhang2025graphtracer,wang2026chief,rafi2026falat} & LLM-built dependency or causal graphs, search & Who\&When and others & many / trained & not comparable & Graph costs extra calls or training \\
+Conformal~\cite{feng2026conformal} & Calibrated step sets & GSM8K, MATH, Who\&When & 1+ & coverage-guaranteed sets & Needs calibration data; no root/symptom model \\
+Elephant~\cite{chen2026elephant} & Full-trace benchmark & 220 traces & -- & up to +76\% with full traces & Evaluation only \\
+\textbf{CARMA (ours)} & DCS + provenance graph + CARR & Who\&When + CARMA-Cascade & \textbf{1} & Sec.~\ref{sec:exp} & Lexical provenance only; open-weight judges \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Materials and Methods}\label{sec:method}
+\subsection{Research Datasets and Data Preparation}
+\textbf{Who\&When.} We use the public Who\&When benchmark~\cite{zhang2025whowhen} (MIT licence, GitHub \texttt{mingyin1/Agents\_Failure\_Attribution}). It contains 184 failed trajectories on GAIA~\cite{mialon2024gaia} and AssistantBench~\cite{yoran2024assistantbench} queries in two subsets. The \emph{algorithm-generated} subset (126 logs) comes from systems generated by CaptainAgent in AutoGen~\cite{wu2024autogen}: role-specialised ``experts'' plus a code-execution terminal, at most ten steps, with each agent's system prompt stored in the log. In every log of this subset, step~0 is the task brief together with the manager's plan and any results carried over from an earlier round, attributed to the first expert; an error in that plan or carried-over code is labelled as $t^*=0$ (20 of 126 logs). The \emph{hand-crafted} subset (58 logs) comes from Magentic-One~\cite{fourney2024magentic} (Orchestrator, WebSurfer, FileSurfer, Coder, ComputerTerminal) and is much longer. Each log stores the query $q$, the correct answer $y^*$, the message history, and human labels for the mistake agent $a^*$, the decisive step $t^*$ and a rationale. In 21 of the 58 hand-crafted logs the labelled agent is not the role that speaks at the labelled step (3 of 126 in the algorithm-generated subset), which caps the agent accuracy of any method that reads the agent off its predicted step. Table~\ref{tab:data} gives statistics computed by our scripts.
+
+A representative algorithm-generated log (\texttt{alg/1}) asks how many clients in a spreadsheet live at even-numbered addresses. Step~0, attributed to \texttt{Excel\_Expert}, carries the manager's plan and code that extracts street numbers without checking the format of the \texttt{Street Address} column; the terminal returns a count of 4, two other experts verify the code rather than the data, and the team reports 4 instead of 8. The annotation blames step~0, although steps 2--4 repeat and approve the wrong value; this is the root-versus-symptom pattern that CARR targets.
+
+\begin{table}[t]
+\centering
+\caption{Statistics of the evaluation data (tokens estimated as characters/4).}
+\label{tab:data}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & Alg.-gen. & Hand-crafted & Cascade \\
+\midrule
+Trajectories & 126 & 58 & 111 \\
+Steps (median / mean / max) & 10 / 8.7 / 10 & 32.5 / 51.6 / 130 & as alg. \\
+Distinct agents (median / max) & 4 / 4 & 5 / 11 & as alg. \\
+Tokens per log (mean / max) & 2.9k / 28k & 16k / 76k & as alg. \\
+Relative position of $t^*$ (mean) & 0.37 & 0.46 & 0.37 \\
+$t^*=0$ / $t^*=T{-}1$ & 20 / 1 & 0 / 7 & -- \\
+Labelled agent $\ne$ speaker at $t^*$ & 3 & 21 & -- \\
+Random step accuracy $\mathbb{E}[1/T]$ & 12.0\% & 4.2\% & 12.1\% \\
+Errors per trajectory & 1 & 1 & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Preparation.} Messages are used verbatim. For hand-crafted logs the agent name is the \texttt{role} field and for algorithm-generated logs the \texttt{name} field, as in the official code. Rendering follows two formats: the original unnumbered ``\texttt{agent: content}'' format for the reproduced baselines, and an explicitly numbered ``\texttt{Step $t$ - agent: content}'' format for DCS and for the numbered All-at-Once control. No training split is needed: no component is trained, and CARR's two hyper-parameters were fixed before any result was seen (Section~\ref{sec:setup}). Hand-crafted logs whose single prompt exceeds the 40k-tokens-per-minute budget of our API tier (7 of 58, all above 36k estimated tokens) are excluded from hand-crafted runs.
+
+\textbf{CARMA-Cascade (new data).} To test the single-decisive-step assumption (G2) we build a multi-error variant of the algorithm-generated subset, using message-level injection in the spirit of AutoInject~\cite{huang2025resilience}. For each trajectory we sample, with a fixed seed, a step $e>t^*$ written by a reasoning agent (excluding the terminal and the human turn, and messages shorter than 80 characters). A different LLM from the judge (\texttt{ministral-8b}, temperature 0.7) rewrites that message to contain exactly one new, plausible, self-contained error (a wrong number or calculation, a misread fact, a wrong assumption or an unjustified conclusion) while keeping its voice, format and length. Rewrites that are unchanged or whose length falls outside $[0.4, 2.5]$ times the original are discarded. Because the injecting model sometimes echoed the prompt delimiters and appended a note naming the error, every rewrite is sanitised by keeping only the text between the echoed delimiters and stripping trailing separators (93 of 111 rewrites needed delimiter stripping; none still announced the injection afterwards). The decisive step remains $t^*$, because the run had already failed because of it, while the trajectory now contains an error set $E=\{t^*,e\}$ with a later, visible symptom. Trajectories with $t^*=T{-}1$ or no eligible later step are skipped, which leaves 111 cascade trajectories. Section~\ref{sec:cascade} reports a manipulation check showing that the injected errors are noticed by the judge.
+
+\subsection{Problem Formulation}
+A failed trajectory is $\tau=(q,y^*,s_0,\dots,s_{T-1})$ with steps $s_t=(a_t,m_t)$, where $a_t\in\mathcal{A}$ is the speaking agent and $m_t$ its message. Human labels give the decisive step $t^*$, defined as the earliest step whose correction would most likely turn the failure into success, and the responsible agent $a^*$. The debugger observes a view $x=\Phi_{o,g}(\tau)$ that depends on an \emph{observability level} $o\in\{L0,L1\}$ (L0: agent names and messages; L1: additionally the agents' role specifications) and a \emph{ground-truth flag} $g\in\{0,1\}$ (whether $y^*$ is shown). An attribution method is a map
+\begin{equation}
+f: x \mapsto (\hat a,\hat t,\pi),\quad \pi=(\pi_1,\dots,\pi_K)\subseteq\{0,\dots,T{-}1\},
+\end{equation}
+returning an agent, a step and optionally a ranked candidate list $\pi$ with $\pi_1=\hat t$. In a cascade trajectory the error set is $E=\{t^*\}\cup E_{\text{inj}}$ with $E_{\text{inj}}=\{e\}$, $e>t^*$, and the target is still $t^*$. The objectives map to the following measurable quantities over a dataset $\mathcal{D}$:
+\begin{align}
+\text{O1: } &\mathrm{Acc}_{\text{step}}(f)=\tfrac{1}{|\mathcal{D}|}\textstyle\sum_\tau \mathbf{1}[\hat t=t^*] \text{ under fixed } (o,g),\label{eq:acc}\\
+\text{O2: } &\mathrm{DR}(f)=\tfrac{1}{|\mathcal{D}_{\text{cas}}|}\textstyle\sum_\tau \mathbf{1}[\hat t\in E_{\text{inj}}],\label{eq:dr}\\
+\text{O3: } &\mathrm{RTR}(f)=\tfrac{1}{|\mathcal{D}|}\textstyle\sum_\tau \mathbf{1}[\hat t\le t^*].\label{eq:rtr}
+\end{align}
+The goal is to maximise (\ref{eq:acc}) and (\ref{eq:rtr}) and minimise (\ref{eq:dr}) subject to a cost constraint of $O(1)$ LLM calls per trajectory, no training, and no re-execution of the multi-agent system, which is unavailable for logged traces and may have side effects in deployment. Rolling back to step $\hat t$ and re-generating from there can only remove the decisive error if $\hat t\le t^*$, which is why (\ref{eq:rtr}) operationalises G3; because RTR rewards early predictions, it is always reported together with the share of work discarded.
+
+\subsection{Proposed Methodology}
+\textbf{Overview.} Figure~\ref{fig:workflow} shows the workflow. The idea is to keep two questions apart. \emph{What might be wrong} is a judgement call, and we leave it to the LLM. \emph{What depends on what} is a fact about the trace, and we can read it off without a model. DCS asks the judge once for a short scored list of suspect steps rather than a single answer. The APG then records which earlier step first introduced each concrete artifact that a later step reuses. Finally, CARR checks whether each suspect looks wrong only because it inherited something from an earlier suspect, and picks the root. Table~\ref{tab:notation} lists the notation.
+
+\input{workflow}
+
+\begin{table}[t]
+\centering
+\caption{Notation.}
+\label{tab:notation}
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$q, y^*$ & task query and correct final answer \\
+$s_t=(a_t,m_t)$ & step $t$: agent and message, $t=0..T{-}1$ \\
+$t^*, a^*$ & annotated decisive step and agent \\
+$o, g$ & observability level; ground-truth flag \\
+$\mathcal{C}=\{(t_k,p_k,\kappa_k)\}$ & DCS candidates: step, probability, origin/propagated tag \\
+$\alpha(m)$ & set of concrete artifacts extracted from text $m$ \\
+$\mathrm{org}(x)$ & first step at which artifact $x$ appears \\
+$W\in[0,1]^{T\times T}$ & provenance edge weights, $W_{ji}>0\Rightarrow j<i$ \\
+$P_{ji}$ & strongest dependency path strength $j\rightsquigarrow i$ \\
+$\gamma,\beta$ & CARR symptom-discount and explanation-bonus weights \\
+$r_i$ & CARR root score of candidate step $i$ \\
+$E, e$ & error set and injected step in CARMA-Cascade \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Dense Candidate Scoring (DCS).} Given $x$, one LLM call with the numbered log returns up to $K=5$ candidates in JSON,
+\begin{equation}
+\mathrm{DCS}(x)=\mathcal{C}=\{(t_k,p_k,\kappa_k)\}_{k=1}^{K'},\quad K'\le K,\quad \textstyle\sum_k p_k\le 1,
+\end{equation}
+where $p_k$ is the judge's probability that $t_k$ is the decisive error and $\kappa_k\in\{\text{origin},\text{propagated}\}$. The prompt defines the decisive error as the earliest error whose correction would most likely have produced success and warns that later steps may look wrong only because they reused an earlier wrong result. Out-of-range steps are dropped, duplicates are merged by summing $p$, and $p$ is renormalised if $\sum_k p_k>1$. The agent of each candidate is read from the log ($a_{t_k}$), not from the judge, which removes agent-name hallucination. DCS thus differs from All-at-Once in three ways (numbered log, prompt, list output); Section~\ref{sec:decomp} isolates each.
+
+\textbf{Artifact Provenance Graph (APG).} Let $\alpha(m)$ extract concrete artifacts from a message: numbers of at least two characters (excluding 0--12 and common years), URLs, file names, identifiers containing an underscore or camel case (at least six characters), and quoted strings of 4--60 characters. Artifacts appearing in $q$ or $y^*$ are marked as \emph{given} and never attributed to an agent. Each remaining artifact has an origin $\mathrm{org}(x)=\min\{t: x\in\alpha(m_t)\}$. The edge weight from $j$ to $i>j$ is the share of step $i$'s reused artifacts that originate at $j$:
+\begin{equation}
+W_{ji}=\frac{|\{x\in\alpha(m_i):\mathrm{org}(x)=j\}|}{|\{x\in\alpha(m_i):\mathrm{org}(x)<i,\ x \text{ not given}\}|}.
+\end{equation}
+Because edges only point forward in time, $W$ is a DAG. The strength of the strongest dependency path is computed by dynamic programming over increasing $i$,
+\begin{equation}
+P_{ji}=\min\Big(1,\ \max\big(W_{ji},\ \max_{j<m<i} P_{jm}W_{mi}\big)\Big),\label{eq:path}
+\end{equation}
+which costs $O(T^3)$ in the worst case (below 3\,ms for $T=130$).
+
+\textbf{Cascade-Aware Root Resolution (CARR).} CARR treats each candidate as a possible root and scores it by how likely it is to be erroneous, how unlikely it is to be merely inherited from an erroneous ancestor, and how much downstream erroneous behaviour it explains:
+\begin{equation}
+r_i=p_i\prod_{\substack{(j,p_j)\in\mathcal{C}\\ j<i}}\big(1-\gamma\,p_jP_{ji}\big)\Big(1+\beta\!\!\sum_{\substack{(k,p_k)\in\mathcal{C}\\ k>i}}\!\! p_kP_{ik}\Big).\label{eq:carr}
+\end{equation}
+The product is a noisy-OR style \emph{symptom discount}: if an earlier candidate $j$ is likely wrong ($p_j$ high) and $i$ demonstrably reuses $j$'s artifacts ($P_{ji}$ high), then $i$'s apparent error is better explained by $j$. The sum is an \emph{explanation bonus} for candidates whose artifacts flow into other likely-erroneous steps. The prediction is $\hat t=\arg\max_i r_i$ (ties to the earlier step), $\hat a=a_{\hat t}$, and the full CARR order gives the ranked list $\pi$. With $\gamma=\beta=0$ CARR reduces to DCS top-1, and replacing $P$ with the complete temporal graph ($P_{ji}=1$ for all $j<i$) gives a positional ``prefer earlier'' heuristic; both are ablations. Algorithm~\ref{alg:carma} summarises inference.
+
+\begin{algorithm}[t]
+\caption{CARMA inference (DCS + APG + CARR)}\label{alg:carma}
+\footnotesize
+\begin{algorithmic}[1]
+\Require trajectory $\tau$, view $(o,g)$, judge LLM, $K,\gamma,\beta$
+\State $\mathcal{C}\gets$ \textsc{ParseJSON}(LLM(\textsc{DCSPrompt}($\Phi_{o,g}(\tau),K$))) \Comment{1 call}
+\State drop out-of-range steps; merge duplicates; renormalise $p$ if $\sum p>1$
+\If{$\mathcal{C}=\emptyset$} \Return (None, None, [ ]) \EndIf
+\State $\mathrm{org}\gets\{x\mapsto -1: x\in\alpha(q)\cup\alpha(y^*)\}$; $W\gets 0^{T\times T}$
+\For{$i=0$ \textbf{to} $T-1$}
+  \State $R\gets\{x\in\alpha(m_i):\mathrm{org}(x)\ge 0\}$
+  \For{$x\in R$} $W_{\mathrm{org}(x),i}\mathrel{+}=1/|R|$ \EndFor
+  \For{$x\in\alpha(m_i)$ with $x\notin\mathrm{org}$} $\mathrm{org}(x)\gets i$ \EndFor
+\EndFor
+\State compute $P$ by Eq.~(\ref{eq:path})
+\For{$(i,p_i)\in\mathcal{C}$} compute $r_i$ by Eq.~(\ref{eq:carr}) \EndFor
+\State $\pi\gets$ candidates sorted by $(-r_i, i)$; $\hat t\gets\pi_1$; $\hat a\gets a_{\hat t}$
+\State \Return $(\hat a,\hat t,\pi)$
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{Training and optimisation.} CARMA has no trainable parameters. The judge is used zero-shot at temperature 0. The two scalars $\gamma=1$ and $\beta=0.5$ were fixed a priori from the semantics of Eq.~(\ref{eq:carr}) ($\gamma=1$ makes the discount a proper noisy-OR; $\beta=0.5$ lets explanation at most modestly reorder candidates) and recorded before any result was observed. Their sensitivity is reported in Section~\ref{sec:ablation} but is not used to select the headline configuration.
+
+\textbf{Inference and execution.} At run time a failed trajectory triggers one DCS call; the APG and CARR run in milliseconds on the CPU. The output is a responsible agent, a decisive step, and a ranked list usable as a rollback schedule: a controller would first roll back to $\pi_1$, and if the re-run still fails, to the next candidate. Because DCS is a single call, latency equals one judge call, compared with up to $T$ sequential calls for SBS and about $\log_2 T$ for BS.
+
+\textbf{Technical novelty and justification.} DCS shares the numbered log with A2P~\cite{west2025a2p} and the observation that judges miscount unnumbered logs with DoVer~\cite{ma2025dover}; we do not claim numbering as a contribution and measure its share of the gain explicitly. What DCS adds is a calibrated-in-form output (a scored list with origin/propagated tags) obtained in one call, which can be evaluated as a ranking and used as a rollback schedule. Compared with GraphTracer, CHIEF and FALAT~\cite{zhang2025graphtracer,wang2026chief,rafi2026falat}, the APG is read deterministically from artifacts in the trace, costs no LLM calls or training, and works as a plug-in over any method that emits candidate probabilities; root/symptom separation is computed outside the LLM, so it cannot be hallucinated and can be audited edge by edge. Compared with conformal sets~\cite{feng2026conformal}, CARR orders candidates by causal role rather than calibrating set size, and the two are complementary. The fixed protocol and controls target G1; CARMA-Cascade, the distraction rate and CARR's symptom discount target G2; the rollback-trigger metrics, the rollback schedule and cost accounting target G3.
+
+\section{Experimental Results and Discussion}\label{sec:exp}
+\subsection{Experimental Setup and Implementation}\label{sec:setup}
+\textbf{Environment.} All components are implemented in Python~3.12 with the standard library only (plus \texttt{matplotlib} for figures), in a single code base shared by the baselines and the proposed method, so that runs differ only in the attribution procedure. No GPU is required because all LLM inference is served by an API. The judge is \texttt{ministral-14b-latest} (Mistral AI, 262k-token context) at temperature 0, with a maximum of 1024 output tokens for the baselines (the official default) and 2048 for DCS's JSON. A second, smaller backbone, \texttt{open-mistral-nemo}, tests whether conclusions transfer across models, and \texttt{ministral-8b-latest} (temperature 0.7) is used only to inject cascade errors so that neither judge evaluates its own rewrites. The free API tier limits each model to two requests and 40k tokens per minute, which determined the scope described below.
+
+\textbf{Protocol and reproducibility.} Every LLM response is cached on disk under a SHA-256 key of the model, prompts and generation configuration. Each run writes one JSON line per trajectory (prediction, raw response, calls, input and output tokens, latency), and all tables and figures in this section are generated from these files by \texttt{scripts/make\_tables.py}, \texttt{scripts/extra\_analysis.py} and \texttt{scripts/make\_figures.py}. All settings, including the backbone, $K=5$, $\gamma=1$, $\beta=0.5$, the artifact types and the cascade seed, were recorded in a pre-registration file before any result was inspected. The main condition is observability L0 with ground truth ($g=1$), the default setting of~\cite{zhang2025whowhen}. Every comparison is paired on the trajectories that all compared methods completed.
+
+\textbf{Run-to-run variability.} API inference at temperature 0 is not bit-reproducible, and the controls of this revision were run about a week after the main runs. We therefore re-ran All-at-Once on a fixed random sample of 20 algorithm-generated logs: the re-run agrees with the logged prediction on the step in 15 of 20 logs and on the agent in 19 of 20, and is correct on 4 versus 3 logs. Differences of a few points between single runs are therefore within run-to-run noise, and we rely on paired tests rather than on point differences.
+
+\textbf{Completed runs.} \TBD{update when queue finishes}. With \texttt{ministral-14b}: All-at-Once, numbered All-at-Once, DCS with $K{=}1$ and DCS with $K{=}5$ on all 126 algorithm-generated logs; All-at-Once and DCS on all 111 CARMA-Cascade logs; All-at-Once and DCS on the 51 hand-crafted logs within the token budget; Binary Search on a fixed random sample of 60 algorithm-generated logs. With \texttt{open-mistral-nemo}: the same algorithm-generated and cascade runs. Step-by-Step (up to $T$ calls per log), the $g=0$ and L1 conditions are implemented but \TBD{status}.
+
+\textbf{Implemented components.} We implemented (i) the three baselines of~\cite{zhang2025whowhen} with their official prompts, plus All-at-Once on the numbered log, (ii) DCS (with $K=5$ and $K=1$), the APG and CARR (Algorithm~\ref{alg:carma}), (iii) the CARMA-Cascade construction, and (iv) the evaluation protocol. From one DCS run we derive, without further calls, DCS top-1, two ablations (earliest candidate; earliest candidate the judge itself tagged as ``origin''), CARR with a temporal graph, and full CARR.
+
+\subsection{Evaluation Metrics}
+We adopt the agent-level and step-level accuracy of~\cite{zhang2025whowhen}, the tolerance accuracy used in its Table~2, top-$k$ accuracy as used for candidate ranking in later work~\cite{feng2026conformal}, and add metrics for G2 and G3 (Table~\ref{tab:metrics}).
+
+\begin{table}[t]
+\centering
+\caption{Evaluation metrics. $\mathbf{1}[\cdot]$ is the indicator; averages are over trajectories.}
+\label{tab:metrics}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}p{1.35cm}p{3.6cm}p{2.9cm}@{}}
+\toprule
+Metric & Definition & Purpose (objective) \\
+\midrule
+Agent acc. & $\mathbf{1}[\hat a=a^*]$ (exact, case- and suffix-normalised) & who failed~\cite{zhang2025whowhen} (O1) \\
+Step acc. & $\mathbf{1}[\hat t=t^*]$ (exact integer match) & when it failed~\cite{zhang2025whowhen} (O1, O2) \\
+Lenient acc. & $\mathbf{1}[\mathrm{str}(t^*)\sqsubseteq\mathrm{str}(\hat t)]$ (substring, official script) & reproduction only (O1) \\
+Acc@$\pm k$ & $\mathbf{1}[|\hat t-t^*|\le k]$ & near misses~\cite{zhang2025whowhen} \\
+Top-$k$ & $\mathbf{1}[t^*\in\{\pi_1..\pi_k\}]$ & candidate quality~\cite{feng2026conformal} \\
+DR & $\mathbf{1}[\hat t\in E_{\text{inj}}]$ on CARMA-Cascade & distraction (O2) \\
+ECE & $\sum_b \frac{n_b}{n}|\bar p_b-\mathrm{acc}_b|$ over confidence bins & calibration of DCS (O2) \\
+RTR & $\mathbf{1}[\hat t\le t^*]$ & rollback re-generates $t^*$ (O3) \\
+WRE & $\mathbb{E}[(t^*-\hat t)/T\mid\hat t\le t^*]$ & correct work discarded (O3) \\
+Schedule & attempts and re-executed steps until some $\pi_k\le t^*$ & ranked list as rollback plan (O3) \\
+Cost & calls, input/output tokens, latency per trajectory & efficiency (O3) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Step accuracy is the primary metric because it is what both the base paper and later work report and what the proposed method claims to improve; agent accuracy is secondary because the agent is determined by the step in our method. The lenient metric reproduces the official \texttt{evaluate.py}, which tests \texttt{actual\_step in predicted\_step} on strings; we report it only to explain differences from published numbers. DR directly measures G2; we report it together with its \emph{pre-injection} level (how often the method already predicted the same step $e$ on the original log) and the chance level $\mathbb{E}[1/T]$. RTR and WRE score a prediction as a rollback trigger~\cite{ma2025dover,feng2026conformal}. The schedule metric tries $\pi_1,\pi_2,\dots$ (then step~0) and counts attempts and re-executed steps (as a multiple of $T$) until a rollback point at or before $t^*$ is reached. These are offline proxies because Who\&When logs cannot be re-executed. Statistical uncertainty is reported as 95\% bootstrap confidence intervals over trajectories (2,000 resamples) and, for paired differences, as paired-bootstrap intervals (5,000 resamples); paired method comparisons use the exact two-sided McNemar test on per-trajectory correctness.
+
+\subsection{Reproducibility of the Base Paper}
+We re-implemented the attribution pipeline of~\cite{zhang2025whowhen} from its public code and prompts: the same trajectory rendering, the same All-at-Once, Step-by-Step and Binary Search prompts, the same parsing of the ``Agent Name / Step Number'' answer, and the same ground-truth line in the prompt. Table~\ref{tab:repro} compares the published GPT-4o results with our runs.
+
+\input{tables/repro}
+
+The reproduced All-at-Once judge reaches 52.4\% agent accuracy (reported 54.3\%) and 14.3\% strict step accuracy (reported 12.5\%); under the official substring scoring the step accuracy is 15.9\%. The reported step value lies inside our 95\% bootstrap interval [7.9, 20.6]. The second backbone gives 49.2\% and 13.5\% (Table~\ref{tab:backbone}). We consider the All-at-Once baseline reproduced. \TBD{Binary Search on the 60-log sample: reproduced vs.\ reported 24.0\%; hand-crafted AAO vs.\ reported 5.3\%.}
+
+\textbf{An indexing artefact in the baseline protocol.} The official All-at-Once prompt asks for a 0-based step index over an unnumbered log. Neither judge ever predicts step~0 (0 of 126 logs for both), although $t^*=0$ in 20 logs, so All-at-Once is 0\% accurate on those logs; the 14B judge answers ``step 1'' in 43 of 126 logs. In only 26.2\% (14B) and 23.8\% (Nemo) of logs is the agent it names the agent who actually speaks at the step it predicts. Its step errors are skewed late ($+1$: 17.5\% vs.\ $-1$: 7.1\%; Fig.~\ref{fig:offsets}), consistent with counting from one, but shifting every prediction by $-1$ only raises its accuracy to 17.5\%, so miscounting is part of the explanation, not all of it. Agent accuracy (about 50\%) is therefore a more faithful summary of the unnumbered judge than step accuracy, and step-level comparisons with this baseline mostly measure whether the judge can locate positions at all. This is a G1 finding: the published baseline's step accuracy depends on log formatting as much as on reasoning.
+
+\textbf{Deviation log.} (i) \emph{Backbone.} The published runs used GPT-4o; we used open-weight Mistral models (Section~\ref{sec:setup}). (ii) \emph{Scoring.} Strict integer matching is primary; the substring score is reported only for comparison. The 1.6-point gap on this subset is small because most algorithm-generated logs have fewer than ten steps; it grows with log length. (iii) \emph{Scope.} Binary Search and Step-by-Step are evaluated on a fixed random sample of 60 algorithm-generated logs because they need up to $\approx\log_2 T$ and $T$ calls per log at two requests per minute. (iv) \emph{Long logs.} Seven hand-crafted logs exceed the judge's token budget and are excluded. (v) \emph{Answer parsing.} The official script falls back to a random choice when no step can be parsed; we record the prediction as missing and score it as wrong, which can only lower our numbers. (vi) \emph{Random reference.} The base paper reports 19.06\% random step accuracy on this subset; we report the analytic $\mathbb{E}[1/T]=12.0\%$ of a uniform guess; the definitions differ.
+
+\subsection{Results and Comparative Analysis}
+\textbf{Main result.} Table~\ref{tab:main_full} compares the reproduced baseline with the proposed method under the main condition (L0, $g=1$) on all 126 algorithm-generated trajectories. DCS raises strict step accuracy from 14.3\% to 40.5\%, a paired difference of $+26.2$ points (95\% paired-bootstrap CI [16.7, 35.7]); of the 45 trajectories on which exactly one method is correct, DCS wins 39 and All-at-Once 6 (exact McNemar $p<0.001$). Agent accuracy rises less, from 52.4\% to 57.1\%; because DCS reads the agent off its predicted step, this is not independent evidence.
+
+\input{tables/main_full}
+
+\textbf{Trivial baselines.} Always predicting step~0 is correct in 15.9\% of trajectories, slightly above the reproduced All-at-Once, and it has RTR = 100\% by construction while discarding 37\% of the trajectory on average. A uniformly random step gives 12.0\% and RTR 44.7\%. DCS is 24.6 points above the step-0 rule in step accuracy and discards less work (WRE 21.7\%).
+
+\textbf{Where the gain comes from.}\label{sec:decomp} DCS changes three things relative to All-at-Once: the log is numbered, the prompt defines the decisive error and warns about propagation, and the output is a scored list. Table~\ref{tab:decomp} adds one change per row on the same trajectories. \TBD{Interpretation once aao\_idx and dcs1 are complete: share of the gain due to numbering (A2P reports +29.7 points for numbering alone~\cite{west2025a2p}), due to the DCS prompt, and due to the list; whether the list adds anything to top-1 accuracy beyond its use as a ranking.}
+
+\input{tables/decomp}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/offsets_calibration.pdf}
+\caption{Left: signed step error $\hat t-t^*$ of All-at-Once and DCS (\texttt{ministral-14b}, 126 logs). Right: reliability of the DCS top-1 probability on original and cascaded logs (bins with $\ge5$ logs); the dashed line is perfect calibration.}
+\label{fig:offsets}
+\end{figure}
+
+\textbf{Relation to the state of the art.} A2P~\cite{west2025a2p} reports 47.46\% step accuracy on this subset, above our 40.5\%, and the base paper reports 25.5\% for Step-by-Step with GPT-4o. The numbers are not directly comparable: both use larger proprietary backbones, A2P uses multi-stage causal prompting, and Step-by-Step needs up to $T$ calls, while DCS uses a 14B open-weight judge and a single call. We do not claim state-of-the-art accuracy.
+
+\textbf{The candidate list as a ranking and a rollback schedule (O3).} The gold step is among the top three DCS candidates in 71.4\% of trajectories and among all candidates (on average 4.4) in 84.9\%; the corresponding numbers for the second judge are 68.3\% and 82.5\%. Rolling back to the step predicted by DCS would re-generate the decisive error in 90.5\% of trajectories, against 48.4\% for All-at-Once, while discarding slightly less correct work (WRE 21.7\% vs.\ 25.7\%). Part of this RTR comes from early predictions: DCS predicts three or more steps before $t^*$ in 32.5\% of logs (Fig.~\ref{fig:offsets}), which is why RTR is reported only with WRE. Used as a schedule, the DCS list reaches a rollback point at or before $t^*$ on the first attempt in 92.1\% of logs and after 1.25 attempts on average, against 52.4\% and 1.48 for All-at-Once followed by step~0.
+
+\textbf{Second backbone.} The same ordering holds with \texttt{open-mistral-nemo} (Table~\ref{tab:backbone}): All-at-Once 13.5\%, DCS 41.3\%, a paired gain of $+27.8$ points [17.5, 38.1] (41 to 8 discordant trajectories, $p<0.001$). The two judges agree on the DCS top-1 step in 61.9\% of logs; at least one is correct in 51.6\% and both in 30.2\%.
+
+\input{tables/backbone}
+
+\textbf{Robustness to cascading errors (G2).}\label{sec:cascade} Table~\ref{tab:cascade} and Fig.~\ref{fig:cascade} report CARMA-Cascade, where each trajectory carries one additional, independently injected error after the annotated decisive step. A manipulation check confirms that the injected errors are noticed: with the 14B judge the injected step appears in the DCS list in 85.6\% of cascaded logs versus 64.0\% of the same logs before injection, and its mean probability rises from 0.045 to 0.104. Yet the 14B judge rarely promotes it to top-1: DCS accuracy is unchanged by the injection (45.0\% to 45.9\%, McNemar $p=1.0$), and its distraction rate rises from a pre-injection 1.8\% to 5.4\%, well below the chance level of 12.1\%. \TBD{All-at-Once on all 111 logs: drop and DR (58-log partial: 12.1\% to 6.9\%, DR 8.6\% pre / 13.8\% post).} The smaller judge is less robust: \TBD{Nemo DCS on all 111: accuracy drop and DR (partial run, $n=77$: 50.6\% to 37.7\%, $p=0.01$; DR 2.6\% pre to 15.6\%).} Robustness to a downstream symptom therefore depends on the judge, and the injected error is a real distractor for weaker judges.
+
+\input{tables/cascade}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/cascade.pdf}
+\caption{CARMA-Cascade (\texttt{ministral-14b}): step accuracy on original vs.\ cascaded logs, and distraction rate (share of predictions on the injected step).}
+\label{fig:cascade}
+\end{figure}
+
+\textbf{Longer logs: the hand-crafted subset.} \TBD{Table~\ref{tab:main_hand} and interpretation once the hand-crafted runs complete (base paper: AAO 5.3\%, SBS 7.0\% step accuracy with GPT-4o).}
+
+\IfFileExists{tables/main_hand.tex}{\input{tables/main_hand}}{}
+
+\subsection{Ablation Studies and Additional Validation}\label{sec:ablation}
+\textbf{Resolution ablation.} Table~\ref{tab:ablation} replaces the resolution step while keeping the same DCS candidates. Picking the earliest candidate, or the earliest candidate the judge itself tagged as an ``origin'', lowers step accuracy slightly (38.9\% each) and raises RTR, as expected from systematically earlier predictions; neither difference is significant ($p=0.73$ and $0.69$). Full CARR and CARR with a purely temporal graph give exactly the DCS top-1 result on every trajectory with the main judge. With the second backbone, CARR changes two predictions, both from correct to wrong (41.3\% to 39.7\%, $p=0.5$).
+
+\input{tables/ablation}
+
+\textbf{Why CARR does not change the ranking: over-confidence.} The judge returns on average 4.4 candidates, and its top candidate has a mean probability of 0.79 on original logs while being correct only 41\% of the time; the expected calibration error is 0.38 (0.30 on cascaded logs; 0.32 for the second judge). The probabilities are nevertheless informative as a ranking: the top candidate is correct in 82\% of logs when $p_1\ge0.9$ but in only 15--21\% when $p_1<0.8$ (Fig.~\ref{fig:offsets}). In Eq.~(\ref{eq:carr}), an earlier candidate $j$ discounts the top candidate by the factor $1-\gamma p_jP_{ji}\ge 1-p_j$, and the runner-up's explanation bonus is at most $1+\beta\sum_k p_k\approx1.5$ for $\beta=0.5$. Overturning a top probability that is typically five or more times the runner-up's would need both a near-certain earlier candidate and a strong provenance path, which almost never occurs. The provenance graph itself is informative (the gold step has an outgoing artifact edge in 61.1\% of algorithm-generated logs), and the room for a better re-ranker is large: top-1 is 40.5\% while the gold step is in the list 84.9\% of the time. A design that calibrates the scores first, or gives provenance to the judge before it scores, is needed to use that room.
+
+\textbf{Sensitivity.} We swept $\gamma\in\{0,0.25,0.5,0.75,1\}$ and $\beta\in\{0,0.25,0.5,1,2\}$ (25 settings). With the main judge, step accuracy is identical in every setting (40.5\% original, 45.9\% cascade). With the second backbone it ranges from 39.7\% to 41.3\% on the original logs. The pre-registered values are therefore not a tuned optimum, and no setting turns CARR into a significant improvement.
+
+\textbf{Cost.} All methods compared in Table~\ref{tab:main_full} use one LLM call per trajectory and about 4k tokens; the APG and CARR run in under a millisecond per trajectory on the CPU. \TBD{Binary Search: measured calls and tokens per log on the 60-log sample.}
+
+\textbf{Summary of findings.} For O1, the reproduced baseline matches the published values within confidence intervals, strict scoring changes step accuracy by 1.6 points on this subset, and the unnumbered protocol makes the baseline unable to predict step~0. \TBD{One sentence on the decomposition.} For O2, a scored candidate list over numbered steps is far more accurate and, with a sufficiently strong judge, robust to an injected downstream error; the provenance re-ranking, as designed, does not add to it, because the judge's probabilities are over-confident. For O3, DCS predictions are usable rollback triggers in nine of ten cases at no extra cost, and the list works as a short rollback schedule.
+
+\section{Conclusion and Future Work}\label{sec:concl}
+This paper studied failure attribution in LLM multi-agent systems under a fixed evaluation protocol. We reproduced the All-at-Once judge of the Who\&When benchmark with open-weight backbones and recovered the published agent- and step-level accuracy to within two points, and found that on unnumbered logs the judge cannot point at the first step at all. We proposed CARMA, which asks the judge for a scored list of candidate error steps over a numbered log (DCS) and re-ranks it with a deterministic artifact-provenance graph (CARR), and built CARMA-Cascade, a multi-error variant of the benchmark with a controlled distraction metric. On the algorithm-generated subset, DCS raises strict step accuracy by 26--28 points over the reproduced baseline with two backbones at one call per log; \TBD{share} of this gain is explained by numbering the log. Its predictions are useful rollback points in nine of ten cases, and with the stronger judge it is not distracted by an injected downstream error. The provenance re-ranking did not improve on DCS, because the judge's candidate probabilities are strongly over-confident; we report this negative result with its cause.
+
+The study has clear limits: \TBD{update: hand-crafted coverage}, two judges from one provider, single runs per condition with measurable run-to-run variability, synthetic cascade errors, and Step-by-Step evaluated only on a sample. Future work will (i) calibrate DCS probabilities, or give provenance to the judge before it scores, so that structural evidence can change the ranking; (ii) evaluate on longer, naturally multi-error traces and with stronger judges, with several runs per condition; and (iii) test the candidate list as a rollback schedule in a system that can re-execute runs, turning the offline proxy into measured recovery.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

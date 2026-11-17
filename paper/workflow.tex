@@ -1,0 +1,27 @@
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw, rounded corners=2pt, align=center, minimum width=3.0cm, minimum height=0.95cm, font=\footnotesize},
+  new/.style={box, fill=gray!18, line width=1.1pt},
+  grp/.style={draw, dashed, rounded corners=4pt, inner sep=6pt},
+  >={Stealth[length=2mm]}]
+\node[box] (traj) at (0,0) {Failed trajectory $\tau$\\ $q,\ s_0,\dots,s_{T-1}$};
+\node[box] (view) at (0,-1.45) {Fixed view $\Phi_{o,g}$\\ $o\in\{L0,L1\},\ g\in\{0,1\}$};
+\node[new] (cas)  at (0,-2.9) {\textbf{CARMA-Cascade}\\ inject $m_e\to\tilde m_e$, $e>t^*$};
+\node[box] (base) at (5.0,0) {Baseline judges~\cite{zhang2025whowhen}\\ AAO / SBS / BS (+ numbered AAO)};
+\node[new] (dcs)  at (5.0,-1.45) {\textbf{DCS}: 1 LLM call over a\\ numbered log $\to \mathcal{C}=\{(t_k,p_k,\kappa_k)\}$};
+\node[new] (apg)  at (5.0,-2.9) {\textbf{APG}: provenance graph\\ $W$, paths $P$ (no LLM)};
+\node[box] (pred) at (10.0,0) {Prediction $(\hat a,\hat t)$\\ + ranked list $\pi$};
+\node[new] (carr) at (10.0,-1.45) {\textbf{CARR}: root score $r_i$\\ symptom discount + bonus};
+\node[box] (eval) at (10.0,-2.9) {Strict acc., top-$k$, DR,\\ RTR, WRE, cost, tests};
+\node[grp, fit=(traj)(cas), label={[font=\small\bfseries]above:(A) Controlled input}] {};
+\node[grp, fit=(base)(apg), label={[font=\small\bfseries]above:(B) Attribution}] {};
+\node[grp, fit=(pred)(eval), label={[font=\small\bfseries]above:(C) Resolution \& evaluation}] {};
+\draw[->] (traj) -- (view); \draw[->] (view) -- (cas);
+\draw[->] (view.east) -- (base.west); \draw[->] (view.east) -- (dcs.west); \draw[->] (cas.east) -- (apg.west);
+\draw[->] (base.east) -- (pred.west); \draw[->] (dcs.east) -- (carr.west); \draw[->] (apg.east) -- (carr.south west);
+\draw[->] (carr) -- (pred);
+\end{tikzpicture}
+\caption{CARMA workflow. (A) A failed trajectory is rendered under a fixed observability level and ground-truth setting, optionally after cascade injection. (B) Baseline judges produce a single prediction; DCS produces a scored candidate list with one LLM call; the Artifact Provenance Graph is built deterministically from the trace. (C) CARR combines both into a root score, and all predictions are scored with the same strict metrics, distraction rate, rollback-trigger metrics and cost. Shaded, thick-bordered boxes are new components.}
+\label{fig:workflow}
+\end{figure*}

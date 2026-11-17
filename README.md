@@ -8,7 +8,7 @@ It contains
 1. **A re-implementation of the base paper** — the three LLM-judge attribution methods (All-at-Once, Step-by-Step, Binary Search) of
    Zhang et al., *Which Agent Causes Task Failures and When?* (ICML 2025), with the official prompts, on the Who&When benchmark (`src/traid/baselines.py`).
 2. **The proposed component** — Dense Candidate Scoring (DCS) + an Artifact Provenance Graph (APG) + Cascade-Aware Root Resolution (CARR) (`src/traid/carr.py`).
-3. **TRAID-Cascade** — a multi-error variant of Who&When built by downstream error injection (`src/traid/cascade.py`).
+3. **CARMA-Cascade** — a multi-error variant of Who&When built by downstream error injection (`src/traid/cascade.py`).
 4. **A controlled evaluation protocol** — strict vs. the original substring scoring, fixed observability levels (L0 outputs only, L1 + agent role specs),
    ground-truth on/off, top-k, distraction rate, rollback-trigger metrics, cost accounting, bootstrap CIs and McNemar tests (`src/traid/metrics.py`, `scripts/evaluate.py`).
 
@@ -56,5 +56,5 @@ Baseline prompts are taken from the official Who&When repository (MIT licence, �
 | ministral-14b | 14.3 | 40.5 | 40.5 |
 | open-mistral-nemo | 13.5 | 41.3 | 39.7 |
 
-TRAID-Cascade (14b): AAO 6.9 (n=58) vs DCS 41.4 on the same logs; DCS over all 111: 45.9, distraction rate 5.4%.
+CARMA-Cascade (14b): AAO 6.9 (n=58) vs DCS 41.4 on the same logs; DCS over all 111: 45.9, distraction rate 5.4%.
 See `paper/main.pdf` and `research/deviation_log.md` for what was and was not run.

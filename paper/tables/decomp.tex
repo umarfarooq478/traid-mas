@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Where does the gain come from? One factor added per row on the same trajectories (algorithm-generated, L0, $g{=}1$). $\Delta$: paired difference to the row above with 95\% paired-bootstrap CI; $p$: exact McNemar.}
+\label{tab:decomp}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+Judge & Prompt / format & $n$ & Step & $\Delta$ [95\% CI] & $p$ \\
+\midrule
+14B & AAO, unnumbered (official) & 17 & 5.9 & -- & -- \\
+14B & AAO + step numbers & 17 & 29.4 & +23.5 [+5.9, +47.1] & 0.125 \\
+14B & DCS prompt, single step ($K{=}1$) & -- & \TBD{run} & & \\
+14B & DCS, scored list ($K{=}5$), top-1 & 17 & 41.2 & +11.8 [-11.8, +35.3] & 0.625 \\
+\midrule
+Nemo & AAO, unnumbered (official) & 126 & 13.5 & -- & -- \\
+Nemo & AAO + step numbers & -- & \TBD{run} & & \\
+Nemo & DCS prompt, single step ($K{=}1$) & -- & \TBD{run} & & \\
+Nemo & DCS, scored list ($K{=}5$), top-1 & 126 & 41.3 & +27.8 [+17.5, +38.1] & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

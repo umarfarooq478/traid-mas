@@ -1,4 +1,4 @@
-"""TRAID-Cascade: multi-error trajectories built from Who&When by downstream error injection.
+"""CARMA-Cascade: multi-error trajectories built from Who&When by downstream error injection.
 
 For a failed trajectory with annotated decisive step t*, we choose a later step e > t*
 written by a reasoning agent (not a tool/terminal/human turn) and ask an LLM to rewrite
