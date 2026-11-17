@@ -1,6 +1,6 @@
-# TRAID-MAS: Trace-Guided Attribution, Intervention and Diagnosis in LLM Multi-Agent Systems
+# CARMA: Candidate-based Attribution of Root Failures in LLM Multi-Agent Systems
 
-Code for the paper *"Cascade-Aware Root Resolution for Failure Attribution in LLM Multi-Agent Systems under Controlled Observability"*
+Code for the paper *"CARMA: Candidate-based Attribution of Root Failures in LLM Multi-Agent Systems"* (repository name: traid-mas)
 (M. U. Farooq, FAST-NUCES Islamabad, Research Methodology course, 2026).
 
 It contains
@@ -25,11 +25,15 @@ Set `WHOWHEN_DIR` if the dataset lives elsewhere.
 ## Reproduce every table
 
 ```bash
-bash scripts/queue.sh                 # all LLM runs, priority-ordered, resumable (results/<model>/*.jsonl)
+bash scripts/queue.sh                 # original LLM runs, priority-ordered, resumable (results/<model>/*.jsonl)
+bash scripts/queue2.sh 14b & bash scripts/queue2.sh nemo   # revision controls: numbered AAO, DCS K=1, cascade, hand-crafted, BS/SBS
+python scripts/extra_analysis.py      # zero-call analyses: offsets, calibration, cascade controls, rollback schedule
 python scripts/evaluate.py            # -> results/summary.json, results/summary.csv
 python scripts/make_tables.py         # -> paper/tables/*.tex
-python scripts/make_figures.py        # -> paper/figures/*.pdf
 python scripts/sensitivity.py         # CARR gamma/beta sweep (no LLM calls)
+python scripts/make_figures.py        # -> paper/figures/*.pdf
+cd paper && latexmk -pdf main.tex    # IEEEtran
+python scripts/verify_bib.py          # reference check -> research/reference_check.md
 ```
 
 Every LLM response is cached under `cache/llm/` keyed by a hash of (model, prompts, generation config); re-running
@@ -43,7 +47,7 @@ Settings were fixed before any result was observed: see `research/preregistratio
 src/traid/   llm.py (clients+cache) data.py baselines.py carr.py cascade.py metrics.py
 scripts/     run.py queue.sh build_cascade.py evaluate.py make_tables.py make_figures.py sensitivity.py data_stats.py apg_stats.py
 paper/       main.tex refs.bib workflow.tex figures/ tables/
-research/    preregistration.md reference_check.md deviation_log.md
+research/    preregistration.md reference_check.md deviation_log.md review.md
 results/     raw per-trajectory predictions (jsonl) + summaries
 ```
 

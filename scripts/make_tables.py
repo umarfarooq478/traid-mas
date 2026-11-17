@@ -90,7 +90,7 @@ def main_table(model, variant, subset, methods, ids_from, label, caption, extra_
     refm = "aao" if "aao" in S else "carr"
     ref = S.get(refm)
     lines = [f"\\begin{{table*}}[t]\n\\centering\n\\caption{{{caption} ($n={len(ids)}$).}}\n\\label{{{label}}}\n\\footnotesize",
-             "\\begin{tabular}{@{}lcccccccccc@{}}\n\\toprule",
+             "\\setlength{\\tabcolsep}{4pt}\n\\begin{tabular}{@{}lcccccccccc@{}}\n\\toprule",
              f"Method & Agent & Step & 95\\% CI & Acc@$\\pm$1 & Top-3 & RTR & WRE$\\downarrow$ & Calls & Tokens & $p$ vs {'AAO' if refm == 'aao' else 'CARR'} \\\\\n\\midrule"]
     for m, s in S.items():
         p = "--"
