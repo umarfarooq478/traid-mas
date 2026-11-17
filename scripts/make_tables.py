@@ -144,7 +144,7 @@ def main():
     sub = main_table(MAIN, "orig", "alg", ["aao", "sbs", "bs", "dcs_top1", "carr"], ["sbs", "bs"], "tab:main_sub",
                      "Paired comparison of all methods on the fixed 60-trajectory algorithm-generated subset")
     hand = main_table(MAIN, "orig", "hand", ["aao", "dcs_top1", "carr"], ["aao", "carr"], "tab:main_hand",
-                      "Hand-crafted (Magentic-One) subset, logs within the API token budget")
+                      "Hand-crafted (Magentic-One) subset, one log failed after retries")
     abl = main_table(MAIN, "orig", "alg", ["dcs_top1", "dcs_earliest", "dcs_origin", "carr_temporal", "carr"], ["carr"], "tab:ablation",
                      "Ablation of the resolution step on the same DCS candidates (algorithm-generated)")
     for key, res in (("full", full), ("sub", sub), ("hand", hand), ("abl", abl)):

@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering
+\caption{Paired comparison of all methods on the fixed 60-trajectory algorithm-generated subset ($n=1$).}
+\label{tab:main_sub}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+Method & Agent & Step & 95\% CI & Acc@$\pm$1 & Top-3 & RTR & WRE$\downarrow$ & Calls & Tokens & $p$ vs AAO \\
+\midrule
+All-at-Once~\cite{zhang2025whowhen} & 0.0 & 0.0 & [0.0, 0.0] & 0.0 & 0.0 & 0.0 & -- & 1.0 & 2.1k & -- \\
+Binary Search~\cite{zhang2025whowhen} & 0.0 & 0.0 & [0.0, 0.0] & 0.0 & 0.0 & 0.0 & -- & 3.0 & 2.6k & 1.000 \\
+DCS top-1 (ours) & 100.0 & 100.0 & [100.0, 100.0] & 100.0 & 100.0 & 100.0 & 0.0 & 1.0 & 2.1k & 1.000 \\
+\textbf{DCS + CARR (ours)} & 100.0 & 100.0 & [100.0, 100.0] & 100.0 & 100.0 & 100.0 & 0.0 & 1.0 & 2.1k & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table*}
