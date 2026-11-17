@@ -8,15 +8,15 @@
 \toprule
 Judge & Prompt / format & $n$ & Step & $\Delta$ [95\% CI] & $p$ \\
 \midrule
-14B & AAO, unnumbered (official) & 17 & 5.9 & -- & -- \\
-14B & AAO + step numbers & 17 & 29.4 & +23.5 [+5.9, +47.1] & 0.125 \\
-14B & DCS prompt, single step ($K{=}1$) & -- & \TBD{run} & & \\
-14B & DCS, scored list ($K{=}5$), top-1 & 17 & 41.2 & +11.8 [-11.8, +35.3] & 0.625 \\
+14B & AAO, unnumbered (official) & 123 & 14.6 & -- & -- \\
+14B & AAO + step numbers & 123 & 30.1 & +15.4 [+8.1, +22.8] & 0.000 \\
+14B & DCS prompt, single step ($K{=}1$) & 123 & 43.9 & +13.8 [+4.9, +22.8] & 0.008 \\
+14B & DCS, scored list ($K{=}5$), top-1 & 123 & 41.5 & -2.4 [-8.9, +4.1] & 0.629 \\
 \midrule
-Nemo & AAO, unnumbered (official) & 126 & 13.5 & -- & -- \\
-Nemo & AAO + step numbers & -- & \TBD{run} & & \\
+Nemo & AAO, unnumbered (official) & 95 & 14.7 & -- & -- \\
+Nemo & AAO + step numbers & 95 & 24.2 & +9.5 [-1.1, +18.9] & 0.108 \\
 Nemo & DCS prompt, single step ($K{=}1$) & -- & \TBD{run} & & \\
-Nemo & DCS, scored list ($K{=}5$), top-1 & 126 & 41.3 & +27.8 [+17.5, +38.1] & 0.000 \\
+Nemo & DCS, scored list ($K{=}5$), top-1 & 95 & 44.2 & +20.0 [+9.5, +30.5] & 0.001 \\
 \bottomrule
 \end{tabular}
 \end{table}
