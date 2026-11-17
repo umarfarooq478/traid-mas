@@ -148,15 +148,15 @@
     ]
    },
    "aao": {
-    "n": 58,
-    "DR_pre_injection": 8.6,
-    "DR_post_injection": 13.8,
-    "acc_orig": 12.1,
-    "acc_cascade": 6.9,
+    "n": 111,
+    "DR_pre_injection": 6.3,
+    "DR_post_injection": 11.7,
+    "acc_orig": 16.2,
+    "acc_cascade": 9.9,
     "mcnemar_orig_vs_cascade": [
-     2,
-     5,
-     0.4531
+     4,
+     11,
+     0.1185
     ]
    }
   },
@@ -354,38 +354,50 @@
   "aao_agent_matches_its_step": 23.8,
   "aao_agent_ok_step_wrong": 41.3,
   "cascade": {
-   "n": 52,
-   "chance_DR": 12.3,
-   "inj_in_list": 86.5,
-   "mean_p_on_e_cascade": 0.18,
-   "mean_p_on_e_original": 0.044,
-   "inj_in_list_original": 63.5,
+   "n": 111,
+   "chance_DR": 12.1,
+   "inj_in_list": 88.3,
+   "mean_p_on_e_cascade": 0.163,
+   "mean_p_on_e_original": 0.071,
+   "inj_in_list_original": 66.7,
    "dcs": {
-    "n": 52,
-    "DR_pre_injection": 0,
-    "DR_post_injection": 17.3,
-    "acc_orig": 48.1,
-    "acc_cascade": 30.8,
+    "n": 111,
+    "DR_pre_injection": 3.6,
+    "DR_post_injection": 14.4,
+    "acc_orig": 45.9,
+    "acc_cascade": 37.8,
     "mcnemar_orig_vs_cascade": [
-     1,
-     10,
-     0.0117
+     5,
+     14,
+     0.0636
+    ]
+   },
+   "aao": {
+    "n": 111,
+    "DR_pre_injection": 8.1,
+    "DR_post_injection": 14.4,
+    "acc_orig": 14.4,
+    "acc_cascade": 9.9,
+    "mcnemar_orig_vs_cascade": [
+     2,
+     7,
+     0.1797
     ]
    }
   },
   "calibration_dcs_cascade": {
-   "n": 50,
-   "mean_top_p": 0.734,
-   "top1_acc": 0.32,
-   "ECE": 0.442,
-   "Brier": 0.406,
+   "n": 109,
+   "mean_top_p": 0.729,
+   "top1_acc": 0.385,
+   "ECE": 0.351,
+   "Brier": 0.358,
    "bins": [
     {
      "bin": [
       0,
       0.5
      ],
-     "n": 2,
+     "n": 4,
      "mean_p": 0.4,
      "acc": 0.5
     },
@@ -394,36 +406,36 @@
       0.5,
       0.7
      ],
-     "n": 1,
-     "mean_p": 0.5,
-     "acc": 1
+     "n": 5,
+     "mean_p": 0.568,
+     "acc": 0.4
     },
     {
      "bin": [
       0.7,
       0.8
      ],
-     "n": 35,
-     "mean_p": 0.701,
-     "acc": 0.257
+     "n": 75,
+     "mean_p": 0.702,
+     "acc": 0.347
     },
     {
      "bin": [
       0.8,
       0.9
      ],
-     "n": 6,
+     "n": 15,
      "mean_p": 0.867,
-     "acc": 0.5
+     "acc": 0.467
     },
     {
      "bin": [
       0.9,
       1.0
      ],
-     "n": 6,
-     "mean_p": 0.95,
-     "acc": 0.333
+     "n": 10,
+     "mean_p": 0.94,
+     "acc": 0.5
     }
    ]
   }

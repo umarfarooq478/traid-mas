@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{Hand-crafted (Magentic-One) subset, logs within the API token budget ($n=6$).}
+\label{tab:main_hand}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+Method & Agent & Step & 95\% CI & Acc@$\pm$1 & Top-3 & RTR & WRE$\downarrow$ & Calls & Tokens & $p$ vs AAO \\
+\midrule
+All-at-Once~\cite{zhang2025whowhen} & 83.3 & 0.0 & [0.0, 0.0] & 16.7 & 0.0 & 83.3 & 26.8 & 1.0 & 14.2k & -- \\
+DCS top-1 (ours) & 16.7 & 0.0 & [0.0, 0.0] & 16.7 & 33.3 & 100.0 & 27.4 & 1.0 & 14.1k & 1.000 \\
+\textbf{DCS + CARR (ours)} & 16.7 & 0.0 & [0.0, 0.0] & 16.7 & 16.7 & 100.0 & 27.4 & 1.0 & 14.1k & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table*}
