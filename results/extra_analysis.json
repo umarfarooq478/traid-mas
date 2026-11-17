@@ -442,5 +442,38 @@
  },
  "judge_agreement_dcs_top1": 61.9,
  "both_correct": 30.2,
- "either_correct": 51.6
+ "either_correct": 51.6,
+ "aao14b_predicts_step1": 43,
+ "dcs14b_median_top1_over_top2_prob": 5.67,
+ "dcs14b_correct_on_step0_logs": 15,
+ "hand": {
+  "ministral-14b-latest/aao": {
+   "n": 57,
+   "step_acc": 3.5,
+   "top3": 0,
+   "in_list": 0,
+   "pred_before_gold": 35
+  },
+  "ministral-14b-latest/dcs": {
+   "n": 57,
+   "step_acc": 5.3,
+   "top3": 19.3,
+   "in_list": 28.1,
+   "pred_before_gold": 46
+  },
+  "open-mistral-nemo/aao": {
+   "n": 6,
+   "step_acc": 0,
+   "top3": 0,
+   "in_list": 0,
+   "pred_before_gold": 6
+  },
+  "open-mistral-nemo/dcs": {
+   "n": 57,
+   "step_acc": 3.5,
+   "top3": 19.3,
+   "in_list": 33.3,
+   "pred_before_gold": 42
+  }
+ }
 }

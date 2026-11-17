@@ -171,6 +171,23 @@ def main():
     out["both_correct"] = round(100 * st.mean(a[i]["step"] == b[i]["step"] == a[i]["gold_step"] for i in ids), 1)
     out["either_correct"] = round(100 * st.mean(a[i]["step"] == a[i]["gold_step"] or b[i]["step"] == b[i]["gold_step"]
                                                 for i in ids), 1)
+    # traceability of numbers quoted in the text
+    aao = load("ministral-14b-latest", "orig_alg_aao_gt1_L0"); dcs = load("ministral-14b-latest", "orig_alg_dcs_gt1_L0")
+    out["aao14b_predicts_step1"] = sum(r["step"] == 1 for r in aao.values())
+    ratios = [c[0]["p"] / c[1]["p"] for c in (r["candidates"] for r in dcs.values()) if len(c) > 1 and c[1]["p"] > 0]
+    out["dcs14b_median_top1_over_top2_prob"] = round(st.median(ratios), 2)
+    out["dcs14b_correct_on_step0_logs"] = sum(r["step"] == r["gold_step"] == 0 for r in dcs.values())
+    hand = {}
+    for model in ("ministral-14b-latest", "open-mistral-nemo"):
+        for meth in ("aao", "dcs"):
+            h = load(model, f"orig_hand_{meth}_gt1_L0")
+            if not h:
+                continue
+            hand[f"{model}/{meth}"] = {"n": len(h), "step_acc": round(100 * st.mean(r["step"] == r["gold_step"] for r in h.values()), 1),
+                                       "top3": round(100 * st.mean(r["gold_step"] in [c["step"] for c in (r.get("candidates") or [])[:3]] for r in h.values()), 1),
+                                       "in_list": round(100 * st.mean(r["gold_step"] in [c["step"] for c in (r.get("candidates") or [])] for r in h.values()), 1),
+                                       "pred_before_gold": sum(r["step"] is not None and r["step"] < r["gold_step"] for r in h.values())}
+    out["hand"] = hand
     (R / "extra_analysis.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
     print(json.dumps(out, indent=1))
 
