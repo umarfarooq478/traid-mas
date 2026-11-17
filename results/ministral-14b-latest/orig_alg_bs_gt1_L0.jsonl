@@ -2,3 +2,5 @@
 {"tid": "alg/2", "T": 7, "gold_agent": "Verification_Expert", "gold_step": 2, "extra_error_steps": [], "agent": "Computer_terminal", "step": 3, "raw": "", "calls": 3, "in_tok": 4163, "out_tok": 9, "latency_s": 2.266}
 {"tid": "alg/3", "T": 8, "gold_agent": "Verification_Expert", "gold_step": 4, "extra_error_steps": [], "agent": "Computer_terminal", "step": 3, "raw": "", "calls": 3, "in_tok": 5785, "out_tok": 9, "latency_s": 2.632}
 {"tid": "alg/4", "T": 8, "gold_agent": "HawaiiRealEstate_Expert", "gold_step": 2, "extra_error_steps": [], "agent": "Validation_Expert", "step": 3, "raw": "", "calls": 3, "in_tok": 3948, "out_tok": 9, "latency_s": 2.245}
+{"tid": "alg/5", "T": 9, "gold_agent": "DataVerification_Expert", "gold_step": 3, "extra_error_steps": [], "agent": "Gaming_Awards_Expert", "step": 1, "raw": "", "calls": 4, "in_tok": 6509, "out_tok": 12, "latency_s": 2.953}
+{"tid": "alg/7", "T": 10, "gold_agent": "ScientificPaperAnalysis_Expert", "gold_step": 5, "extra_error_steps": [], "agent": "ScientificPaperAnalysis_Expert", "step": 1, "raw": "", "calls": 4, "in_tok": 5359, "out_tok": 12, "latency_s": 3.068}
