@@ -203,106 +203,208 @@
    "distract": null
   }
  },
- "open-mistral-nemo/cascade_alg_dcs_gt1_L0": {
+ "ministral-14b-latest/orig_hand_dcs_gt1_L0": {
   "0.0|0.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.0|0.25": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.0|0.5": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.0|1.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.0|2.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.25|0.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.25|0.25": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.25|0.5": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.25|1.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.25|2.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.5|0.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.5|0.25": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.5|0.5": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.5|1.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.5|2.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.75|0.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.75|0.25": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.75|0.5": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.75|1.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "0.75|2.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "1.0|0.0": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "1.0|0.25": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "1.0|0.5": {
-   "step": 37.18,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "1.0|1.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
   },
   "1.0|2.0": {
-   "step": 38.46,
-   "distract": 15.79
+   "step": 5.26,
+   "distract": null
+  }
+ },
+ "open-mistral-nemo/cascade_alg_dcs_gt1_L0": {
+  "0.0|0.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.0|0.25": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.0|0.5": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.0|1.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.0|2.0": {
+   "step": 38.74,
+   "distract": 14.68
+  },
+  "0.25|0.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.25|0.25": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.25|0.5": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.25|1.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.25|2.0": {
+   "step": 38.74,
+   "distract": 14.68
+  },
+  "0.5|0.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.5|0.25": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.5|0.5": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.5|1.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.5|2.0": {
+   "step": 38.74,
+   "distract": 14.68
+  },
+  "0.75|0.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.75|0.25": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.75|0.5": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.75|1.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "0.75|2.0": {
+   "step": 38.74,
+   "distract": 14.68
+  },
+  "1.0|0.0": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "1.0|0.25": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "1.0|0.5": {
+   "step": 37.84,
+   "distract": 14.68
+  },
+  "1.0|1.0": {
+   "step": 38.74,
+   "distract": 14.68
+  },
+  "1.0|2.0": {
+   "step": 38.74,
+   "distract": 14.68
   }
  },
  "open-mistral-nemo/orig_alg_dcs_gt1_L0": {
@@ -404,6 +506,108 @@
   },
   "1.0|2.0": {
    "step": 40.48,
+   "distract": null
+  }
+ },
+ "open-mistral-nemo/orig_hand_dcs_gt1_L0": {
+  "0.0|0.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.0|0.25": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.0|0.5": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.0|1.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.0|2.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.25|0.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.25|0.25": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.25|0.5": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.25|1.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.25|2.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.5|0.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.5|0.25": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.5|0.5": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.5|1.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.5|2.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.75|0.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.75|0.25": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.75|0.5": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.75|1.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "0.75|2.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "1.0|0.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "1.0|0.25": {
+   "step": 3.51,
+   "distract": null
+  },
+  "1.0|0.5": {
+   "step": 3.51,
+   "distract": null
+  },
+  "1.0|1.0": {
+   "step": 3.51,
+   "distract": null
+  },
+  "1.0|2.0": {
+   "step": 3.51,
    "distract": null
   }
  }

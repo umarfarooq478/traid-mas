@@ -1,2 +1,4 @@
 {"tid": "alg/1", "T": 6, "gold_agent": "Excel_Expert", "gold_step": 0, "extra_error_steps": [], "agent": "DataVerification_Expert", "step": 4, "raw": "", "calls": 3, "in_tok": 2598, "out_tok": 9, "latency_s": 2.607}
 {"tid": "alg/2", "T": 7, "gold_agent": "Verification_Expert", "gold_step": 2, "extra_error_steps": [], "agent": "Computer_terminal", "step": 3, "raw": "", "calls": 3, "in_tok": 4163, "out_tok": 9, "latency_s": 2.266}
+{"tid": "alg/3", "T": 8, "gold_agent": "Verification_Expert", "gold_step": 4, "extra_error_steps": [], "agent": "Computer_terminal", "step": 3, "raw": "", "calls": 3, "in_tok": 5785, "out_tok": 9, "latency_s": 2.632}
+{"tid": "alg/4", "T": 8, "gold_agent": "HawaiiRealEstate_Expert", "gold_step": 2, "extra_error_steps": [], "agent": "Validation_Expert", "step": 3, "raw": "", "calls": 3, "in_tok": 3948, "out_tok": 9, "latency_s": 2.245}

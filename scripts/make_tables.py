@@ -121,7 +121,7 @@ def main():
     for subset in ("alg", "hand"):
         for m in ("aao", "sbs", "bs"):
             P = predictor(MAIN, "orig", subset, m)
-            if not P:
+            if not P or (m in ("sbs", "bs") and len(P) < 60):  # incomplete sample runs are not reported
                 rep.append((subset, m, None)); continue
             s = stats(P, sorted(P))
             out[f"repro_{subset}_{m}"] = {k: v for k, v in s.items() if not k.startswith("_")}
@@ -132,7 +132,7 @@ def main():
     for subset, m, s in rep:
         ra, rs = (reported if subset == "alg" else rep_hand_reported)[m]
         if s is None:
-            lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & -- & \\multicolumn{{2}}{{c}}{{not run}} \\\\")
+            lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & -- & \\multicolumn{{2}}{{c}}{{not run / not completed}} \\\\")
         else:
             lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & {s['n']} & {f1(s['agent'])} & {f1(s['step'])} / {f1(s['lenient'])} \\\\")
     lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")

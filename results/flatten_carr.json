@@ -180,9 +180,9 @@
   ]
  },
  "open-mistral-nemo/cascade/tau=1": {
-  "n": 87,
-  "acc": 39.1,
-  "dr": 15.3,
+  "n": 111,
+  "acc": 37.8,
+  "dr": 14.7,
   "vs_dcs_top1": [
    0,
    0,
@@ -190,9 +190,9 @@
   ]
  },
  "open-mistral-nemo/cascade/tau=2": {
-  "n": 87,
-  "acc": 40.2,
-  "dr": 15.3,
+  "n": 111,
+  "acc": 38.7,
+  "dr": 14.7,
   "vs_dcs_top1": [
    1,
    0,
@@ -200,9 +200,9 @@
   ]
  },
  "open-mistral-nemo/cascade/tau=3": {
-  "n": 87,
-  "acc": 41.4,
-  "dr": 14.1,
+  "n": 111,
+  "acc": 39.6,
+  "dr": 13.8,
   "vs_dcs_top1": [
    2,
    0,
@@ -210,9 +210,9 @@
   ]
  },
  "open-mistral-nemo/cascade/tau=5": {
-  "n": 87,
-  "acc": 40.2,
-  "dr": 14.1,
+  "n": 111,
+  "acc": 38.7,
+  "dr": 13.8,
   "vs_dcs_top1": [
    2,
    1,
@@ -220,22 +220,22 @@
   ]
  },
  "open-mistral-nemo/cascade/tau=10": {
-  "n": 87,
-  "acc": 42.5,
-  "dr": 11.8,
+  "n": 111,
+  "acc": 39.6,
+  "dr": 11.9,
   "vs_dcs_top1": [
    5,
-   2,
-   0.453
+   3,
+   0.727
   ]
  },
  "open-mistral-nemo/cascade/tau=1000": {
-  "n": 87,
-  "acc": 39.1,
-  "dr": 10.6,
+  "n": 111,
+  "acc": 36.9,
+  "dr": 11.9,
   "vs_dcs_top1": [
-   7,
-   7,
+   8,
+   9,
    1.0
   ]
  }
