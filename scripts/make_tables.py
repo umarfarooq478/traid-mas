@@ -65,6 +65,10 @@ def stats(P, ids):
     return s
 
 
+def fp(x, nd=3):
+    return "$<$0.001" if x < 0.001 else f"{x:.{nd}f}"
+
+
 def f1(x):
     return "--" if x != x else f"{x:.1f}"
 
@@ -96,7 +100,7 @@ def main_table(model, variant, subset, methods, ids_from, label, caption, extra_
         p = "--"
         if ref is not None and m != refm:
             b01, b10, pv = M.mcnemar_exact(s["_step"], ref["_step"])
-            p = f"{pv:.3f}"
+            p = fp(pv)
             LOG[f"{label}:{m}"] = (b01, b10, pv)
         lines.append(f"{NAMES[m]} & {f1(s['agent'])} & {f1(s['step'])} & [{s['step_ci'][0]:.1f}, {s['step_ci'][1]:.1f}] & {f1(s['tol1'])} & "
                      f"{f1(s['top3'])} & {f1(s['rtr'])} & {f1(s['wre'])} & {s['calls']:.1f} & {s['tok'] / 1000:.1f}k & {p} \\\\")
@@ -148,8 +152,8 @@ def main():
             out[key] = {m: {k: v for k, v in s.items() if not k.startswith("_")} for m, s in res[0].items()}
 
     # ---------- decomposition of the DCS gain (numbering / prompt / list) ----------
-    dec_lines = ["\\begin{table}[t]\n\\centering\n\\caption{Where does the gain come from? One factor added per row on the same trajectories (algorithm-generated, L0, $g{=}1$). $\\Delta$: paired difference to the row above with 95\\% paired-bootstrap CI; $p$: exact McNemar.}\n\\label{tab:decomp}\n\\footnotesize\n\\setlength{\\tabcolsep}{2.5pt}",
-                 "\\begin{tabular}{@{}llcccc@{}}\n\\toprule\nJudge & Prompt / format & $n$ & Step & $\\Delta$ [95\\% CI] & $p$ \\\\\n\\midrule"]
+    dec_lines = ["\\begin{table}[t]\n\\centering\n\\caption{Where does the gain come from? One factor added per row on the same trajectories (algorithm-generated, L0, $g{=}1$). $\\Delta$: paired difference to the row above with 95\\% paired-bootstrap CI; $p$: exact McNemar against the row above. $t^*{>}0$: step accuracy on the logs whose decisive step is not step~0 (McNemar against the row above). $\\hat t{=}0$: number of logs on which the method predicts step~0 (gold: 20 of 126).}\n\\label{tab:decomp}\n\\footnotesize\n\\setlength{\\tabcolsep}{2.5pt}",
+                 "\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\nJudge & Prompt / format & $n$ & Step & $\\Delta$ [95\\% CI] & $p$ & $t^*{>}0$ ($p$) & $\\hat t{=}0$ \\\\\n\\midrule"]
     for model in (MAIN, "open-mistral-nemo"):
         chain = [("aao", "AAO, unnumbered (official)"), ("aao_idx", "AAO + step numbers"),
                  ("dcs1", "DCS prompt, single step ($K{=}1$)"), ("dcs_top1", "DCS, scored list ($K{=}5$), top-1")]
@@ -161,17 +165,21 @@ def main():
         prev = None; out_dec = {}
         for m, lab in chain:
             if m not in P:
-                dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & -- & \\TBD{{run}} & & \\\\"); continue
+                dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & -- & \\TBD{{run}} & & & & \\\\"); continue
             sm = stats(P[m], ids); out_dec[m] = round(sm["step"], 1)
+            nz = [k for k, t in enumerate(ids) if P[m][t][0]["gold_step"] > 0]
+            accnz = 100 * st.mean(sm["_step"][k] for k in nz)
+            z0 = sum(P[m][t][1][1] == 0 for t in ids)
             if prev is None:
-                d = "--"; pv = "--"
+                d = "--"; pv = "--"; pnz = "--"
             else:
                 a, b = prev["_step"], sm["_step"]
                 import random as _r
                 rng = _r.Random(0); nn = len(a); bs = sorted(sum(b[j] - a[j] for j in (rng.randrange(nn) for _ in range(nn))) / nn for _ in range(5000))
                 d = f"{100 * (sum(b) - sum(a)) / nn:+.1f} [{100 * bs[125]:+.1f}, {100 * bs[4874]:+.1f}]"
-                pv = f"{M.mcnemar_exact(a, b)[2]:.3f}"
-            dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & {len(ids)} & {f1(sm['step'])} & {d} & {pv} \\\\")
+                pv = fp(M.mcnemar_exact(a, b)[2])
+                pnz = fp(M.mcnemar_exact([a[k] for k in nz], [b[k] for k in nz])[2], 2)
+            dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & {len(ids)} & {f1(sm['step'])} & {d} & {pv} & {accnz:.1f} ({pnz}) & {z0} \\\\")
             prev = sm
         dec_lines.append("\\midrule")
         out[f"decomp_{model}"] = {"n": len(ids), **out_dec}
@@ -183,7 +191,7 @@ def main():
     # ---------- cascade (paired with the same ids on the original logs) ----------
     cas_rows = []
     for model in (MAIN, "open-mistral-nemo"):
-        for m in ("aao", "bs", "dcs_top1", "carr_temporal", "carr"):
+        for m in ("aao", "aao_idx", "bs", "dcs_top1", "carr_temporal", "carr"):
             Pc = predictor(model, "cascade", "alg", m)
             Po = predictor(model, "orig", "alg", m)
             if not Pc or not Po:
@@ -199,7 +207,7 @@ def main():
     lines = ["\\begin{table}[t]\n\\centering\n\\caption{CARMA-Cascade: step accuracy on the original logs vs.\\ the same logs with one injected downstream error, and distraction rate (DR, share of predictions blaming the injected step).}\n\\label{tab:cascade}\n\\footnotesize\n\\setlength{\\tabcolsep}{3pt}",
              "\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\nJudge & Method & $n$ & Orig. & Cascade & $\\Delta$ ($p$) & DR pre & DR$\\downarrow$ \\\\\n\\midrule"]
     for model, m, so, sc in cas_rows:
-        lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {NAMES[m].replace('~\\cite{zhang2025whowhen}', '')} & {sc['n']} & {f1(so['step'])} & {f1(sc['step'])} & {sc['step'] - so['step']:+.1f} ({sc['p_oc']:.2f}) & {f1(so['dr_pre'])} & {f1(sc['dr'])} \\\\")
+        lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {NAMES[m].replace('~\\cite{zhang2025whowhen}', '')} & {sc['n']} & {f1(so['step'])} & {f1(sc['step'])} & {sc['step'] - so['step']:+.1f} ({fp(sc['p_oc'], 2)}) & {f1(so['dr_pre'])} & {f1(sc['dr'])} \\\\")
     lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
     (TAB / "cascade.tex").write_text("\n".join(lines), encoding="utf-8")
 
