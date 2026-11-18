@@ -17,3 +17,4 @@
 {"tid": "alg/26", "T": 9, "gold_agent": "WomenInComputerScienceHistory_Expert", "gold_step": 3, "extra_error_steps": [], "agent": "WomenInComputerScienceHistory_Expert", "step": 3, "raw": "", "calls": 3, "in_tok": 6932, "out_tok": 9, "latency_s": 2.401}
 {"tid": "alg/31", "T": 10, "gold_agent": "Verification_Expert", "gold_step": 3, "extra_error_steps": [], "agent": "Verification_Expert", "step": 3, "raw": "", "calls": 3, "in_tok": 7108, "out_tok": 9, "latency_s": 2.193}
 {"tid": "alg/33", "T": 10, "gold_agent": "InformationExtraction_Expert", "gold_step": 8, "extra_error_steps": [], "agent": "DOI_Expert", "step": 6, "raw": "", "calls": 4, "in_tok": 6104, "out_tok": 12, "latency_s": 3.189}
+{"tid": "alg/35", "T": 10, "gold_agent": "WebServing_Expert", "gold_step": 8, "extra_error_steps": [], "agent": "WebServing_Expert", "step": 1, "raw": "", "calls": 4, "in_tok": 25974, "out_tok": 12, "latency_s": 3.831}
