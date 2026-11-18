@@ -462,11 +462,11 @@
    "pred_before_gold": 46
   },
   "open-mistral-nemo/aao": {
-   "n": 6,
-   "step_acc": 0,
+   "n": 57,
+   "step_acc": 3.5,
    "top3": 0,
    "in_list": 0,
-   "pred_before_gold": 6
+   "pred_before_gold": 39
   },
   "open-mistral-nemo/dcs": {
    "n": 57,
