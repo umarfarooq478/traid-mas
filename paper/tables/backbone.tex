@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\caption{Second backbone (\texttt{open-mistral-nemo}), algorithm-generated subset ($n=126$).}
+\label{tab:backbone}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+Method & Agent & Step & 95\% CI & Acc@$\pm$1 & Top-3 & RTR & WRE$\downarrow$ & Calls & Tokens & $p$ vs AAO \\
+\midrule
+All-at-Once~\cite{zhang2025whowhen} & 49.2 & 13.5 & [7.9, 19.0] & 33.3 & 13.5 & 50.8 & 23.3 & 1.0 & 4.3k & -- \\
+DCS top-1 (ours) & 62.7 & 41.3 & [32.5, 50.0] & 53.2 & 68.3 & 84.1 & 17.7 & 1.0 & 4.1k & $<$0.001 \\
+\textbf{DCS + CARR (ours)} & 62.7 & 39.7 & [31.0, 48.4] & 51.6 & 67.5 & 84.1 & 18.7 & 1.0 & 4.1k & $<$0.001 \\
+\bottomrule
+\end{tabular}
+\end{table*}

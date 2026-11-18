@@ -6,8 +6,11 @@ logs/
 *.log
 *.out
 *.pdf
-*.tex
+!paper/main.pdf
+!paper/figures/*.pdf
 *.blg
 *.bbl
 /sections
 /tables
+*.fdb_latexmk
+*.fls

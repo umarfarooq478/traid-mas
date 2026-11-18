@@ -71,3 +71,25 @@ if sp.exists():
         fig.colorbar(im, ax=ax, fraction=0.05, label="step acc. (%)")
         fig.tight_layout(); fig.savefig(FIG / "sensitivity.pdf", bbox_inches="tight")
 print("figures:", sorted(p.name for p in FIG.glob("*.pdf")))
+
+# Fig 6: signed step error and DCS reliability (from scripts/extra_analysis.py)
+xp = ROOT / "results" / "extra_analysis.json"
+if xp.exists():
+    X = json.loads(xp.read_text(encoding="utf-8"))["ministral-14b-latest"]
+    fig, ax = plt.subplots(1, 2, figsize=(3.45, 1.6))
+    keys = ["-3", "-2", "-1", "0", "1", "2", "3", "none"]; lab = ["≤-3", "-2", "-1", "0", "+1", "+2", "≥+3", "n/a"]
+    w = 0.4
+    ax[0].bar([i - w / 2 for i in range(8)], [X["offsets_aao"].get(k, 0) for k in keys], w, color=C_BASE, label="AAO")
+    ax[0].bar([i + w / 2 for i in range(8)], [X["offsets_dcs"].get(k, 0) for k in keys], w, color=C_OURS, label="DCS")
+    ax[0].set_xticks(range(8)); ax[0].set_xticklabels(lab, rotation=60, fontsize=6); ax[0].set_ylabel("% of logs")
+    ax[0].set_title(r"$\hat t - t^*$", fontsize=8); ax[0].legend(frameon=False, fontsize=6)
+    for name, col, mk in (("calibration_dcs", C_OURS, "o"), ("calibration_dcs_cascade", "#c0392b", "s")):
+        B = X.get(name, {}).get("bins", [])
+        B = [b for b in B if b["n"] >= 5]
+        ax[1].plot([b["mean_p"] for b in B], [b["acc"] for b in B], marker=mk, ms=3, color=col, lw=1,
+                   label="original" if name == "calibration_dcs" else "cascade")
+    ax[1].plot([0, 1], [0, 1], ls="--", lw=0.6, color="black"); ax[1].set_xlim(0.4, 1); ax[1].set_ylim(0, 1)
+    ax[1].set_xlabel("DCS top-1 probability"); ax[1].set_ylabel("accuracy"); ax[1].set_title("Reliability", fontsize=8)
+    ax[1].legend(frameon=False, fontsize=6)
+    fig.tight_layout(); fig.savefig(FIG / "offsets_calibration.pdf", bbox_inches="tight")
+    print("figure: offsets_calibration.pdf")

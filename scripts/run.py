@@ -60,8 +60,8 @@ def run_one(method, llm, tr, gt, obs, seed):
         return baselines.step_by_step(llm, tr, with_gt=gt, obs=obs)
     if method == "bs":
         return baselines.binary_search(llm, tr, with_gt=gt, seed=seed, obs=obs)
-    if method == "dcs":
-        cands, raw, cost = carr.dense_candidates(llm, tr, with_gt=gt, obs=obs)
+    if method in ("dcs", "dcs1"):  # dcs1: identical prompt but a single candidate (K=1) -> isolates the list
+        cands, raw, cost = carr.dense_candidates(llm, tr, with_gt=gt, obs=obs, k=1 if method == "dcs1" else 5)
         top = cands[0] if cands else None
         return {"agent": top["agent"] if top else None, "step": top["step"] if top else None,
                 "candidates": cands, "raw": raw[:3000], **cost.as_dict()}
@@ -70,7 +70,7 @@ def run_one(method, llm, tr, gt, obs, seed):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--method", required=True, choices=["aao", "aao_idx", "sbs", "bs", "dcs"])
+    ap.add_argument("--method", required=True, choices=["aao", "aao_idx", "sbs", "bs", "dcs", "dcs1"])
     ap.add_argument("--subset", required=True, choices=["alg", "hand"])
     ap.add_argument("--gt", type=int, default=1)
     ap.add_argument("--obs", default="L0", choices=["L0", "L1"])
@@ -82,10 +82,11 @@ def main():
     ap.add_argument("--sample", type=int, default=None, help="evaluate a fixed random subset of this size")
     ap.add_argument("--sample_seed", type=int, default=0)
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--tag", default="", help="suffix for the output file (e.g. a re-run for drift checks)")
     ap.add_argument("--min_interval", type=float, default=0.0)
     a = ap.parse_args()
 
-    llm = make_llm(a.model, max_tokens=2048 if a.method == "dcs" else 1024, min_interval_s=a.min_interval)
+    llm = make_llm(a.model, max_tokens=2048 if a.method.startswith("dcs") else 1024, min_interval_s=a.min_interval)
     if a.variant == "cascade":
         inj = make_llm(a.inject_model or a.model, max_tokens=4096, temperature=0.7)
         trajs = load_cascade(a.subset, inj, a.seed)
@@ -97,7 +98,7 @@ def main():
         keep = set(random.Random(a.sample_seed).sample(sorted(t.tid for t in data.load(a.subset)), a.sample))
         trajs = [t for t in trajs if t.tid.replace("-cas/", "/") in keep]
 
-    out = ROOT / "results" / a.model / f"{a.variant}_{a.subset}_{a.method}_gt{a.gt}_{a.obs}.jsonl"
+    out = ROOT / "results" / a.model / f"{a.variant}_{a.subset}_{a.method}_gt{a.gt}_{a.obs}{a.tag}.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     done = set()
     if out.exists():

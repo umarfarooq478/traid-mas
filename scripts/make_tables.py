@@ -65,11 +65,15 @@ def stats(P, ids):
     return s
 
 
+def fp(x, nd=3):
+    return "$<$0.001" if x < 0.001 else f"{x:.{nd}f}"
+
+
 def f1(x):
     return "--" if x != x else f"{x:.1f}"
 
 
-NAMES = {"aao": "All-at-Once~\\cite{zhang2025whowhen}", "aao_idx": "All-at-Once + step numbers", "sbs": "Step-by-Step~\\cite{zhang2025whowhen}",
+NAMES = {"aao": "All-at-Once~\\cite{zhang2025whowhen}", "aao_idx": "All-at-Once + step numbers", "dcs1": "DCS prompt, $K{=}1$", "sbs": "Step-by-Step~\\cite{zhang2025whowhen}",
          "bs": "Binary Search~\\cite{zhang2025whowhen}", "dcs_top1": "DCS top-1 (ours)", "dcs_earliest": "DCS earliest cand.",
          "dcs_origin": "DCS earliest `origin' tag", "carr_temporal": "DCS + CARR, temporal graph", "carr": "\\textbf{DCS + CARR (ours)}"}
 
@@ -87,15 +91,16 @@ def main_table(model, variant, subset, methods, ids_from, label, caption, extra_
         ids &= set(P[m]) if m in ids_from else ids
     ids = sorted(ids)
     S = {m: stats(P[m], ids) for m in P}
-    ref = S.get("carr")
+    refm = "aao" if "aao" in S else "carr"
+    ref = S.get(refm)
     lines = [f"\\begin{{table*}}[t]\n\\centering\n\\caption{{{caption} ($n={len(ids)}$).}}\n\\label{{{label}}}\n\\footnotesize",
-             "\\begin{tabular}{@{}lcccccccccc@{}}\n\\toprule",
-             "Method & Agent & Step & 95\\% CI & Acc@$\\pm$1 & Top-3 & RTR & WRE$\\downarrow$ & Calls & Tokens & $p$ vs CARR \\\\\n\\midrule"]
+             "\\setlength{\\tabcolsep}{4pt}\n\\begin{tabular}{@{}lcccccccccc@{}}\n\\toprule",
+             f"Method & Agent & Step & 95\\% CI & Acc@$\\pm$1 & Top-3 & RTR & WRE$\\downarrow$ & Calls & Tokens & $p$ vs {'AAO' if refm == 'aao' else 'CARR'} \\\\\n\\midrule"]
     for m, s in S.items():
         p = "--"
-        if ref is not None and m != "carr":
+        if ref is not None and m != refm:
             b01, b10, pv = M.mcnemar_exact(s["_step"], ref["_step"])
-            p = f"{pv:.3f}"
+            p = fp(pv)
             LOG[f"{label}:{m}"] = (b01, b10, pv)
         lines.append(f"{NAMES[m]} & {f1(s['agent'])} & {f1(s['step'])} & [{s['step_ci'][0]:.1f}, {s['step_ci'][1]:.1f}] & {f1(s['tol1'])} & "
                      f"{f1(s['top3'])} & {f1(s['rtr'])} & {f1(s['wre'])} & {s['calls']:.1f} & {s['tok'] / 1000:.1f}k & {p} \\\\")
@@ -108,6 +113,11 @@ def macro(name, val):
     NUM[name] = val
 
 
+def _wide(t):
+    """Two-column-wide float for tables that do not fit one IEEE column."""
+    return t.replace("\\begin{table}[t]", "\\begin{table*}[t]", 1).replace("\\end{table}", "\\end{table*}")
+
+
 def main():
     out = {}
     # ---------- reproduction (alg, subset where available) ----------
@@ -116,8 +126,8 @@ def main():
     for subset in ("alg", "hand"):
         for m in ("aao", "sbs", "bs"):
             P = predictor(MAIN, "orig", subset, m)
-            if not P:
-                continue
+            if not P or (m in ("sbs", "bs") and len(P) < 60):  # incomplete sample runs are not reported
+                rep.append((subset, m, None)); continue
             s = stats(P, sorted(P))
             out[f"repro_{subset}_{m}"] = {k: v for k, v in s.items() if not k.startswith("_")}
             rep.append((subset, m, s))
@@ -126,7 +136,10 @@ def main():
              "\\begin{tabular}{@{}llccccc@{}}\n\\toprule\n & & \\multicolumn{2}{c}{Reported} & \\multicolumn{3}{c}{Reproduced} \\\\\n\\cmidrule(lr){3-4}\\cmidrule(lr){5-7}\nSubset & Method & Agent & Step & $n$ & Agent & Step (strict / len.) \\\\\n\\midrule"]
     for subset, m, s in rep:
         ra, rs = (reported if subset == "alg" else rep_hand_reported)[m]
-        lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & {s['n']} & {f1(s['agent'])} & {f1(s['step'])} / {f1(s['lenient'])} \\\\")
+        if s is None:
+            lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & -- & \\multicolumn{{2}}{{c}}{{not run / not completed}} \\\\")
+        else:
+            lines.append(f"{'Alg.' if subset == 'alg' else 'Hand'} & {m.upper()} & {ra:.1f} & {rs:.1f} & {s['n']} & {f1(s['agent'])} & {f1(s['step'])} / {f1(s['lenient'])} \\\\")
     lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
     (TAB / "repro.tex").write_text("\n".join(lines), encoding="utf-8")
 
@@ -136,17 +149,54 @@ def main():
     sub = main_table(MAIN, "orig", "alg", ["aao", "sbs", "bs", "dcs_top1", "carr"], ["sbs", "bs"], "tab:main_sub",
                      "Paired comparison of all methods on the fixed 60-trajectory algorithm-generated subset")
     hand = main_table(MAIN, "orig", "hand", ["aao", "dcs_top1", "carr"], ["aao", "carr"], "tab:main_hand",
-                      "Hand-crafted (Magentic-One) subset, logs within the API token budget")
+                      "Hand-crafted (Magentic-One) subset, one log failed after retries")
     abl = main_table(MAIN, "orig", "alg", ["dcs_top1", "dcs_earliest", "dcs_origin", "carr_temporal", "carr"], ["carr"], "tab:ablation",
                      "Ablation of the resolution step on the same DCS candidates (algorithm-generated)")
     for key, res in (("full", full), ("sub", sub), ("hand", hand), ("abl", abl)):
         if res:
             out[key] = {m: {k: v for k, v in s.items() if not k.startswith("_")} for m, s in res[0].items()}
 
+    # ---------- decomposition of the DCS gain (numbering / prompt / list) ----------
+    dec_lines = ["\\begin{table}[t]\n\\centering\n\\caption{Where does the gain come from? One factor added per row on the same trajectories (algorithm-generated, L0, $g{=}1$). $\\Delta$: paired difference to the row above with 95\\% paired-bootstrap CI; $p$: exact McNemar against the row above. $t^*{>}0$: step accuracy on the logs whose decisive step is not step~0 (McNemar against the row above). $\\hat t{=}0$: number of logs on which the method predicts step~0 (gold: 20 of 126).}\n\\label{tab:decomp}\n\\footnotesize\n\\setlength{\\tabcolsep}{2.5pt}",
+                 "\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\nJudge & Prompt / format & $n$ & Step & $\\Delta$ [95\\% CI] & $p$ & $t^*{>}0$ ($p$) & $\\hat t{=}0$ \\\\\n\\midrule"]
+    for model in (MAIN, "open-mistral-nemo"):
+        chain = [("aao", "AAO, unnumbered (official)"), ("aao_idx", "AAO + step numbers"),
+                 ("dcs1", "DCS prompt, single step ($K{=}1$)"), ("dcs_top1", "DCS, scored list ($K{=}5$), top-1")]
+        P = {m: predictor(model, "orig", "alg", m) for m, _ in chain}
+        P = {m: p for m, p in P.items() if p}
+        if len(P) < 2:
+            continue
+        ids = sorted(set.intersection(*[set(p) for p in P.values()]))
+        prev = None; out_dec = {}
+        for m, lab in chain:
+            if m not in P:
+                dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & -- & \\TBD{{run}} & & & & \\\\"); continue
+            sm = stats(P[m], ids); out_dec[m] = round(sm["step"], 1)
+            nz = [k for k, t in enumerate(ids) if P[m][t][0]["gold_step"] > 0]
+            accnz = 100 * st.mean(sm["_step"][k] for k in nz)
+            z0 = sum(P[m][t][1][1] == 0 for t in ids)
+            if prev is None:
+                d = "--"; pv = "--"; pnz = "--"
+            else:
+                a, b = prev["_step"], sm["_step"]
+                import random as _r
+                rng = _r.Random(0); nn = len(a); bs = sorted(sum(b[j] - a[j] for j in (rng.randrange(nn) for _ in range(nn))) / nn for _ in range(5000))
+                d = f"{100 * (sum(b) - sum(a)) / nn:+.1f} [{100 * bs[125]:+.1f}, {100 * bs[4874]:+.1f}]"
+                pv = fp(M.mcnemar_exact(a, b)[2])
+                pnz = fp(M.mcnemar_exact([a[k] for k in nz], [b[k] for k in nz])[2], 2)
+            dec_lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {lab} & {len(ids)} & {f1(sm['step'])} & {d} & {pv} & {accnz:.1f} ({pnz}) & {z0} \\\\")
+            prev = sm
+        dec_lines.append("\\midrule")
+        out[f"decomp_{model}"] = {"n": len(ids), **out_dec}
+    if dec_lines[-1] == "\\midrule":
+        dec_lines.pop()
+    dec_lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
+    (TAB / "decomp.tex").write_text(_wide("\n".join(dec_lines)), encoding="utf-8")
+
     # ---------- cascade (paired with the same ids on the original logs) ----------
     cas_rows = []
     for model in (MAIN, "open-mistral-nemo"):
-        for m in ("aao", "bs", "dcs_top1", "carr_temporal", "carr"):
+        for m in ("aao", "aao_idx", "bs", "dcs_top1", "carr_temporal", "carr"):
             Pc = predictor(model, "cascade", "alg", m)
             Po = predictor(model, "orig", "alg", m)
             if not Pc or not Po:
@@ -154,15 +204,17 @@ def main():
             ids = sorted(t for t in Pc if t.replace("-cas/", "/") in Po)
             Po2 = {t: Po[t.replace("-cas/", "/")] for t in ids}
             sc, so = stats(Pc, ids), stats(Po2, ids)
+            so["dr_pre"] = 100 * st.mean(Po2[t][1][1] in Pc[t][0]["extra_error_steps"] for t in ids)
+            b01, b10, pv = M.mcnemar_exact(so["_step"], sc["_step"]); sc["p_oc"] = pv
             cas_rows.append((model, m, so, sc))
             out[f"cascade_{model}_{m}"] = {"orig": {k: v for k, v in so.items() if not k.startswith("_")},
                                            "cas": {k: v for k, v in sc.items() if not k.startswith("_")}}
-    lines = ["\\begin{table}[t]\n\\centering\n\\caption{TRAID-Cascade: step accuracy on the original logs vs.\\ the same logs with one injected downstream error, and distraction rate (DR, share of predictions blaming the injected step).}\n\\label{tab:cascade}\n\\footnotesize\n\\setlength{\\tabcolsep}{3pt}",
-             "\\begin{tabular}{@{}llccccc@{}}\n\\toprule\nJudge & Method & $n$ & Orig. & Cascade & $\\Delta$ & DR$\\downarrow$ \\\\\n\\midrule"]
+    lines = ["\\begin{table}[t]\n\\centering\n\\caption{CARMA-Cascade: step accuracy on the original logs vs.\\ the same logs with one injected downstream error, and distraction rate (DR, share of predictions blaming the injected step).}\n\\label{tab:cascade}\n\\footnotesize\n\\setlength{\\tabcolsep}{3pt}",
+             "\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\nJudge & Method & $n$ & Orig. & Cascade & $\\Delta$ ($p$) & DR pre & DR$\\downarrow$ \\\\\n\\midrule"]
     for model, m, so, sc in cas_rows:
-        lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {NAMES[m].replace('~\\cite{zhang2025whowhen}', '')} & {sc['n']} & {f1(so['step'])} & {f1(sc['step'])} & {sc['step'] - so['step']:+.1f} & {f1(sc['dr'])} \\\\")
+        lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {NAMES[m].replace('~\\cite{zhang2025whowhen}', '')} & {sc['n']} & {f1(so['step'])} & {f1(sc['step'])} & {sc['step'] - so['step']:+.1f} ({fp(sc['p_oc'], 2)}) & {f1(so['dr_pre'])} & {f1(sc['dr'])} \\\\")
     lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
-    (TAB / "cascade.tex").write_text("\n".join(lines), encoding="utf-8")
+    (TAB / "cascade.tex").write_text(_wide("\n".join(lines)), encoding="utf-8")
 
     # ---------- conditions (O1): gt, obs, numbering ----------
     cond = []

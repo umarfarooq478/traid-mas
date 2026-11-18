@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{Where does the gain come from? One factor added per row on the same trajectories (algorithm-generated, L0, $g{=}1$). $\Delta$: paired difference to the row above with 95\% paired-bootstrap CI; $p$: exact McNemar against the row above. $t^*{>}0$: step accuracy on the logs whose decisive step is not step~0 (McNemar against the row above). $\hat t{=}0$: number of logs on which the method predicts step~0 (gold: 20 of 126).}
+\label{tab:decomp}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+Judge & Prompt / format & $n$ & Step & $\Delta$ [95\% CI] & $p$ & $t^*{>}0$ ($p$) & $\hat t{=}0$ \\
+\midrule
+14B & AAO, unnumbered (official) & 126 & 14.3 & -- & -- & 17.0 (--) & 0 \\
+14B & AAO + step numbers & 126 & 31.0 & +16.7 [+9.5, +23.8] & $<$0.001 & 32.1 ($<$0.001) & 12 \\
+14B & DCS prompt, single step ($K{=}1$) & 126 & 44.4 & +13.5 [+4.8, +23.0] & 0.008 & 37.7 (0.33) & 31 \\
+14B & DCS, scored list ($K{=}5$), top-1 & 126 & 40.5 & -4.0 [-11.1, +2.4] & 0.359 & 34.0 (0.42) & 38 \\
+\midrule
+Nemo & AAO, unnumbered (official) & 126 & 13.5 & -- & -- & 16.0 (--) & 0 \\
+Nemo & AAO + step numbers & 126 & 22.2 & +8.7 [+0.8, +17.5] & 0.061 & 23.6 (0.17) & 5 \\
+Nemo & DCS prompt, single step ($K{=}1$) & 126 & 44.4 & +22.2 [+12.7, +31.7] & $<$0.001 & 37.7 (0.01) & 38 \\
+Nemo & DCS, scored list ($K{=}5$), top-1 & 126 & 41.3 & -3.2 [-11.9, +5.6] & 0.585 & 40.6 (0.65) & 18 \\
+\bottomrule
+\end{tabular}
+\end{table*}
