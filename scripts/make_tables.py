@@ -113,6 +113,11 @@ def macro(name, val):
     NUM[name] = val
 
 
+def _wide(t):
+    """Two-column-wide float for tables that do not fit one IEEE column."""
+    return t.replace("\\begin{table}[t]", "\\begin{table*}[t]", 1).replace("\\end{table}", "\\end{table*}")
+
+
 def main():
     out = {}
     # ---------- reproduction (alg, subset where available) ----------
@@ -186,7 +191,7 @@ def main():
     if dec_lines[-1] == "\\midrule":
         dec_lines.pop()
     dec_lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
-    (TAB / "decomp.tex").write_text("\n".join(dec_lines), encoding="utf-8")
+    (TAB / "decomp.tex").write_text(_wide("\n".join(dec_lines)), encoding="utf-8")
 
     # ---------- cascade (paired with the same ids on the original logs) ----------
     cas_rows = []
@@ -209,7 +214,7 @@ def main():
     for model, m, so, sc in cas_rows:
         lines.append(f"{'14B' if model == MAIN else 'Nemo'} & {NAMES[m].replace('~\\cite{zhang2025whowhen}', '')} & {sc['n']} & {f1(so['step'])} & {f1(sc['step'])} & {sc['step'] - so['step']:+.1f} ({fp(sc['p_oc'], 2)}) & {f1(so['dr_pre'])} & {f1(sc['dr'])} \\\\")
     lines.append("\\bottomrule\n\\end{tabular}\n\\end{table}")
-    (TAB / "cascade.tex").write_text("\n".join(lines), encoding="utf-8")
+    (TAB / "cascade.tex").write_text(_wide("\n".join(lines)), encoding="utf-8")
 
     # ---------- conditions (O1): gt, obs, numbering ----------
     cond = []
