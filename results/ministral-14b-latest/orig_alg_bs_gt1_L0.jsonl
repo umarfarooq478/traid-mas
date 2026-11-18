@@ -54,3 +54,7 @@
 {"tid": "alg/106", "T": 6, "gold_agent": "DataAnalysis_Expert", "gold_step": 0, "extra_error_steps": [], "agent": "Verification_Expert", "step": 1, "raw": "", "calls": 3, "in_tok": 3818, "out_tok": 9, "latency_s": 2.244}
 {"tid": "alg/107", "T": 8, "gold_agent": "Verification_Expert", "gold_step": 6, "extra_error_steps": [], "agent": "Bioinformatics_Expert", "step": 4, "raw": "", "calls": 3, "in_tok": 8088, "out_tok": 9, "latency_s": 2.412}
 {"tid": "alg/109", "T": 10, "gold_agent": "Verification_Expert", "gold_step": 1, "extra_error_steps": [], "agent": "Verification_Expert", "step": 1, "raw": "", "calls": 4, "in_tok": 13748, "out_tok": 12, "latency_s": 3.401}
+{"tid": "alg/114", "T": 7, "gold_agent": "Verification_Expert", "gold_step": 1, "extra_error_steps": [], "agent": "Computer_terminal", "step": 2, "raw": "", "calls": 3, "in_tok": 7800, "out_tok": 9, "latency_s": 2.492}
+{"tid": "alg/115", "T": 7, "gold_agent": "Verification_Expert", "gold_step": 1, "extra_error_steps": [], "agent": "Computer_terminal", "step": 4, "raw": "", "calls": 3, "in_tok": 2332, "out_tok": 9, "latency_s": 2.22}
+{"tid": "alg/122", "T": 10, "gold_agent": "BingAPI_Expert", "gold_step": 3, "extra_error_steps": [], "agent": "Verification_Expert", "step": 9, "raw": "", "calls": 3, "in_tok": 14738, "out_tok": 13, "latency_s": 2.806}
+{"tid": "alg/123", "T": 10, "gold_agent": "Paintball_Expert", "gold_step": 3, "extra_error_steps": [], "agent": "Computer_terminal", "step": 4, "raw": "", "calls": 3, "in_tok": 6180, "out_tok": 9, "latency_s": 2.587}
