@@ -1,6 +1,6 @@
 \begin{table*}[t]
 \centering
-\caption{Paired comparison of all methods on the fixed 60-trajectory algorithm-generated subset ($n=4$).}
+\caption{Paired comparison of all methods on the fixed 60-trajectory algorithm-generated subset ($n=60$).}
 \label{tab:main_sub}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -8,10 +8,10 @@
 \toprule
 Method & Agent & Step & 95\% CI & Acc@$\pm$1 & Top-3 & RTR & WRE$\downarrow$ & Calls & Tokens & $p$ vs AAO \\
 \midrule
-All-at-Once~\cite{zhang2025whowhen} & 75.0 & 0.0 & [0.0, 0.0] & 50.0 & 0.0 & 0.0 & -- & 1.0 & 2.5k & -- \\
-Binary Search~\cite{zhang2025whowhen} & 0.0 & 0.0 & [0.0, 0.0] & 75.0 & 0.0 & 25.0 & 12.5 & 3.0 & 4.1k & 1.000 \\
-DCS top-1 (ours) & 75.0 & 75.0 & [25.0, 100.0] & 75.0 & 100.0 & 100.0 & 6.2 & 1.0 & 2.5k & 0.250 \\
-\textbf{DCS + CARR (ours)} & 75.0 & 75.0 & [25.0, 100.0] & 75.0 & 100.0 & 100.0 & 6.2 & 1.0 & 2.5k & 0.250 \\
+All-at-Once~\cite{zhang2025whowhen} & 55.0 & 11.7 & [5.0, 20.0] & 35.0 & 11.7 & 46.7 & 23.2 & 1.0 & 3.8k & -- \\
+Binary Search~\cite{zhang2025whowhen} & 35.0 & 20.0 & [10.0, 30.0] & 45.0 & 20.0 & 55.0 & 18.7 & 3.4 & 6.7k & 0.227 \\
+DCS top-1 (ours) & 50.0 & 33.3 & [21.7, 45.0] & 50.0 & 70.0 & 88.3 & 22.0 & 1.0 & 3.6k & 0.004 \\
+\textbf{DCS + CARR (ours)} & 50.0 & 33.3 & [21.7, 45.0] & 50.0 & 66.7 & 88.3 & 22.0 & 1.0 & 3.6k & 0.004 \\
 \bottomrule
 \end{tabular}
 \end{table*}
