@@ -27,3 +27,5 @@
 {"tid": "alg/45", "T": 5, "gold_agent": "PublicationData_Expert", "gold_step": 1, "extra_error_steps": [], "agent": "PublicationData_Expert", "step": 1, "raw": "", "calls": 3, "in_tok": 3629, "out_tok": 9, "latency_s": 2.646}
 {"tid": "alg/47", "T": 6, "gold_agent": "Mesopotamian_Number_Systems_Expert", "gold_step": 1, "extra_error_steps": [], "agent": "Mesopotamian_Number_Systems_Expert", "step": 3, "raw": "", "calls": 3, "in_tok": 2043, "out_tok": 9, "latency_s": 2.036}
 {"tid": "alg/49", "T": 10, "gold_agent": "Validation_Expert", "gold_step": 2, "extra_error_steps": [], "agent": "DataExtraction_Expert", "step": 8, "raw": "", "calls": 3, "in_tok": 8123, "out_tok": 9, "latency_s": 2.068}
+{"tid": "alg/52", "T": 10, "gold_agent": "ISBNCheckDigit_Expert", "gold_step": 0, "extra_error_steps": [], "agent": "VerificationExpert", "step": 6, "raw": "", "calls": 4, "in_tok": 5524, "out_tok": 12, "latency_s": 2.84}
+{"tid": "alg/55", "T": 10, "gold_agent": "WebServing_Expert", "gold_step": 5, "extra_error_steps": [], "agent": "ResearchFunding_Expert", "step": 4, "raw": "", "calls": 3, "in_tok": 11312, "out_tok": 9, "latency_s": 1.615}

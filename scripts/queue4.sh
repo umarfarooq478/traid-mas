@@ -15,3 +15,8 @@ else
   $R --method aao     --subset hand --gt 1
 fi
 echo QUEUE_DONE
+# nemo2: earliness control on CARMA-Cascade with the second judge (added after the nemo lane finished)
+if [ "$1" = "nemo2" ]; then
+  python3 -P scripts/run.py --model open-mistral-nemo --workers 1 --min_interval 31 --method aao_idx --subset alg --gt 1 --variant cascade --inject_model ministral-8b-latest
+  echo QUEUE_DONE
+fi
